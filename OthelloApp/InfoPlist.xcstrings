@@ -1,0 +1,18 @@
+{
+  "sourceLanguage" : "ja",
+  "strings" : {
+    "CFBundleDisplayName" : {
+      "comment" : "The app name shown on the Home Screen.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Othello" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Othello" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Othello" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "オセロ" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Othello" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "黑白棋" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

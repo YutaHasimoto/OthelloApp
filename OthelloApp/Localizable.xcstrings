@@ -1,0 +1,558 @@
+{
+  "sourceLanguage" : "ja",
+  "strings" : {
+    "accessibility.board_cell" : {
+      "comment" : "VoiceOver description for a board cell. First value is its position, second is the disc state.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%1$@, %2$@" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "%1$@, %2$@" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "%1$@, %2$@" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "%1$@, %2$@" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%1$@，%2$@" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%1$@、%2$@" } }
+      }
+    },
+    "accessibility.board_cell_legal" : {
+      "comment" : "VoiceOver description for a legal board cell. First value is its position, second is the disc state.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%1$@, %2$@, available move" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "%1$@, %2$@, jugada disponible" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "%1$@, %2$@, coup possible" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "%1$@, %2$@, jogada disponível" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%1$@，%2$@，可以落子" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%1$@、%2$@、置ける場所" } }
+      }
+    },
+    "accessibility.dismiss_result" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Close results" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cerrar resultados" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fermer les résultats" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Fechar resultados" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "关闭结果" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "リザルトを閉じる" } }
+      }
+    },
+    "accessibility.locked" : {
+      "comment" : "VoiceOver label for a locked menu item. The value is the item title.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%@, locked" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "%@, bloqueado" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "%@, verrouillé" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "%@, bloqueado" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@，已锁定" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@、ロック中" } }
+      }
+    },
+    "accessibility.show_board" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Show the board, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mostrar el tablero, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher le plateau, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Mostrar o tabuleiro, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "显示棋盘，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "盤面を表示するにゃ" } }
+      }
+    },
+    "alert.reset.cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Keep Playing" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Seguir jugando" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Continuer" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Continuar jogando" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "继续游戏" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "続ける" } }
+      }
+    },
+    "alert.reset.confirm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Restart" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Reiniciar" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Recommencer" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Reiniciar" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "重新开始" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "やりなおす" } }
+      }
+    },
+    "alert.reset.message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Reset the current board to its starting position." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Devuelve el tablero a la posición inicial." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Remet le plateau à sa position initiale." } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Volta o tabuleiro à posição inicial." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "将当前棋盘恢复到初始状态。" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "今の盤面を最初からに戻すにゃ。" } }
+      }
+    },
+    "alert.reset.title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Restart the game, meow?" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¿Reiniciar la partida, miau?" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Recommencer la partie, miaou ?" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Reiniciar a partida, miau?" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "要重新开始游戏吗，喵？" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ゲームをやりなおすにゃ？" } }
+      }
+    },
+    "board.position" : {
+      "comment" : "Board coordinates. First value is the one-based row, second is the one-based column.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "row %1$lld, column %2$lld" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "fila %1$lld, columna %2$lld" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "ligne %1$lld, colonne %2$lld" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "linha %1$lld, coluna %2$lld" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "第%1$lld行，第%2$lld列" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld行%2$lld列" } }
+      }
+    },
+    "celebration.unlock_message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "A new opponent awaits, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Un nuevo rival te espera, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Un nouvel adversaire t’attend, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Um novo rival espera por você, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "新的对手在等你，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "新しい相手が待ってるにゃ" } }
+      }
+    },
+    "celebration.unlock_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Oni Unlocked, Meow!" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¡Oni desbloqueado, miau!" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Oni débloqué, miaou !" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Oni desbloqueado, miau!" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "鬼级已解锁，喵！" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "鬼 解放にゃ" } }
+      }
+    },
+    "celebration.victory_message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You beat the CPU, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Has vencido a la CPU, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Tu as battu l’ordinateur, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Você venceu a CPU, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "你打败了电脑，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPUに勝ったにゃ" } }
+      }
+    },
+    "celebration.victory_title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Victory, Meow!" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "¡Victoria, miau!" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Victoire, miaou !" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Vitória, miau!" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "胜利啦，喵！" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "勝利にゃ！" } }
+      }
+    },
+    "control.menu" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Menu" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Menú" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Menu" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Menu" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "菜单" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メニュー" } }
+      }
+    },
+    "control.reset" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Restart" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Reiniciar" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Recommencer" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Reiniciar" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "重新开始" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "やりなおし" } }
+      }
+    },
+    "control.undo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Undo Move" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Deshacer jugada" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Annuler le coup" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Desfazer jogada" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "悔棋" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "一手戻る" } }
+      }
+    },
+    "difficulty.easy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Easy" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Fácil" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Facile" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Fácil" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "简单" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "やさしい" } }
+      }
+    },
+    "difficulty.normal" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "普通" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ふつう" } }
+      }
+    },
+    "difficulty.oni" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Oni" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Oni" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Oni" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Oni" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "鬼级" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "鬼" } }
+      }
+    },
+    "difficulty.strong" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Strong" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Difícil" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Difficile" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Difícil" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "困难" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "つよい" } }
+      }
+    },
+    "disc.black" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Black" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Negras" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Noir" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Pretas" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "黑棋" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "黒" } }
+      }
+    },
+    "disc.empty" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Empty" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Vacía" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vide" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Vazio" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "空位" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "空き" } }
+      }
+    },
+    "disc.unit" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "discs" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "fichas" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "pions" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "peças" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "枚" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "石" } }
+      }
+    },
+    "disc.white" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "White" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Blancas" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Blanc" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Brancas" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "白棋" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "白" } }
+      }
+    },
+    "game.cpu_thinking" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "CPU is thinking, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "La CPU está pensando, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "L’ordinateur réfléchit, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "A CPU está pensando, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "电脑正在思考，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPUが考え中にゃ" } }
+      }
+    },
+    "game.draw" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "It's a draw, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Empate, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Match nul, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Empate, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "平局，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "引き分けにゃ" } }
+      }
+    },
+    "game.invalid_move" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You can't place a disc there, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "No puedes poner una ficha ahí, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible de poser un pion ici, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Não dá para colocar uma peça aí, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "那里不能落子，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "そこには置けないにゃ" } }
+      }
+    },
+    "game.move" : {
+      "comment" : "Move message. First value is the player color, second is the board position.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%1$@ placed a disc at %2$@, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "%1$@ ha puesto una ficha en %2$@, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "%1$@ a posé un pion en %2$@, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "%1$@ colocou uma peça em %2$@, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%1$@在%2$@落子，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%1$@が%2$@に置いたにゃ" } }
+      }
+    },
+    "game.pass" : {
+      "comment" : "Pass message. The value is the player color.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%@ has no legal move and passes, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "%@ no puede jugar y pasa, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "%@ ne peut pas jouer et passe, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "%@ não tem jogada e passa, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@无棋可下，跳过回合，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@は置けないのでパスにゃ" } }
+      }
+    },
+    "game.start_black" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Black starts, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Empiezan las negras, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les noirs commencent, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "As pretas começam, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "黑棋先行，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "黒からスタートにゃ" } }
+      }
+    },
+    "game.turn" : {
+      "comment" : "Turn message. The value is the current player color.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%@'s turn, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Turno de %@, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Au tour de %@, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Vez de %@, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "轮到%@，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@の番にゃ" } }
+      }
+    },
+    "game.undo" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Undid one move, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Jugada deshecha, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Coup annulé, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Jogada desfeita, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已悔一步，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "一手戻したにゃ" } }
+      }
+    },
+    "game.winner" : {
+      "comment" : "Winner message. The value is the winning player color.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "%@ wins, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Ganan las %@, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les %@ gagnent, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "As %@ vencem, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@获胜，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@の勝ちにゃ" } }
+      }
+    },
+    "menu.cpu_battle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Play vs CPU" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Jugar contra la CPU" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Jouer contre l’ordinateur" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Jogar contra a CPU" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "对战电脑" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU対戦" } }
+      }
+    },
+    "menu.two_player_battle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Two Players" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Dos jugadores" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Deux joueurs" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Dois jogadores" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "双人对战" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "2人対戦" } }
+      }
+    },
+    "mode.cpu" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "CPU" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "CPU" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ordinateur" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "CPU" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "电脑" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU" } }
+      }
+    },
+    "mode.two_players" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "2 Players" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "2 jugadores" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "2 joueurs" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "2 jogadores" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "双人" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "2人" } }
+      }
+    },
+    "player.cpu" : {
+      "comment" : "CPU player title. The value is the difficulty title.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ordinateur %@" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@电脑" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@" } }
+      }
+    },
+    "result.cpu_draw" : {
+      "comment" : "CPU draw message. The value is the difficulty title.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You drew with the %@ CPU, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Empate contra la CPU %@, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Égalité contre l’ordinateur %@, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Empate contra a CPU %@, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "与%@电脑打成平局，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@と引き分けにゃ" } }
+      }
+    },
+    "result.cpu_victory" : {
+      "comment" : "CPU victory message. The value is the difficulty title.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "The %@ CPU wins, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Gana la CPU %@, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "L’ordinateur %@ gagne, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "A CPU %@ venceu, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@电脑获胜，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@の勝利にゃ" } }
+      }
+    },
+    "result.human_victory" : {
+      "comment" : "Human victory message. The value is the CPU difficulty title.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "You beat the %@ CPU, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Has vencido a la CPU %@, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Tu as battu l’ordinateur %@, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Você venceu a CPU %@, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "你打败了%@电脑，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@に勝利したにゃ" } }
+      }
+    },
+    "result.in_progress" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Game in progress, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Partida en curso, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Partie en cours, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Partida em andamento, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "对局进行中，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "対戦中にゃ" } }
+      }
+    },
+    "result.label" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "RESULT" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "RESULTADO" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "RÉSULTAT" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "RESULTADO" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "结果" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "RESULT" } }
+      }
+    },
+    "result.menu" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Back to Menu" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Volver al menú" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Retour au menu" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Voltar ao menu" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "返回菜单" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メニューへ" } }
+      }
+    },
+    "result.play_again" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Play Again" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Jugar de nuevo" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rejouer" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Jogar novamente" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "再来一局" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "もう一度対戦" } }
+      }
+    },
+    "result.play_to_finish" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Play to the end to decide the winner, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Juega hasta el final para decidir, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Joue jusqu’au bout pour décider, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Jogue até o fim para decidir, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "下到最后决出胜负吧，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最後まで打って勝負を決めるにゃ" } }
+      }
+    },
+    "result.score" : {
+      "comment" : "VoiceOver final score. First value is black's score, second is white's score.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Final score: Black %1$lld discs, White %2$lld discs" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Resultado final: negras %1$lld, blancas %2$lld" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Score final : noirs %1$lld, blancs %2$lld" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Placar final: pretas %1$lld, brancas %2$lld" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "最终比分：黑棋%1$lld枚，白棋%2$lld枚" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最終スコア、黒%1$lld石、白%2$lld石" } }
+      }
+    },
+    "result.two_player_message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Check the final score and play again right away, meow" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Mira el resultado y vuelve a jugar, miau" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Consulte le score et rejoue, miaou" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Confira o placar e jogue de novo, miau" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "看看最终比分，马上再来一局吧，喵" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最終スコアを確認して、すぐ再戦できるにゃ" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

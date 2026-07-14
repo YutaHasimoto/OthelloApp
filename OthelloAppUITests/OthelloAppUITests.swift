@@ -22,12 +22,99 @@ final class OthelloAppUITests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() throws {
-        // UI tests must launch the application that they test.
+    func testOpeningMoveCanBePlayed() throws {
         let app = XCUIApplication()
         app.launch()
 
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let twoPlayerButton = app.buttons["startTwoPlayerButton"]
+        XCTAssertTrue(twoPlayerButton.waitForExistence(timeout: 5))
+
+        let buttonIsHittable = NSPredicate(format: "isHittable == true")
+        expectation(for: buttonIsHittable, evaluatedWith: twoPlayerButton)
+        waitForExpectations(timeout: 2)
+
+        twoPlayerButton.tap()
+
+        let openingMove = app.buttons["boardCell-2-3"]
+        XCTAssertTrue(openingMove.waitForExistence(timeout: 3))
+
+        openingMove.tap()
+
+        XCTAssertTrue(app.buttons["boardCell-2-3"].waitForExistence(timeout: 3))
+    }
+
+    func testEnglishLocalizationIsDisplayed() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+
+        let twoPlayerButton = app.buttons["startTwoPlayerButton"]
+        XCTAssertTrue(twoPlayerButton.waitForExistence(timeout: 5))
+        XCTAssertEqual(twoPlayerButton.label, "Two Players")
+    }
+
+    func testCaptureEnglishStoreScreenshots() throws {
+        try captureStoreScreenshots(
+            language: "en",
+            locale: "en_US",
+            fileNameLocale: "en",
+            capturesAfterMove: true
+        )
+    }
+
+    func testCaptureSimplifiedChineseStoreScreenshots() throws {
+        try captureStoreScreenshots(language: "zh-Hans", locale: "zh_CN", fileNameLocale: "zh-hans")
+    }
+
+    func testCaptureBrazilianPortugueseStoreScreenshots() throws {
+        try captureStoreScreenshots(language: "pt-BR", locale: "pt_BR", fileNameLocale: "pt-br")
+    }
+
+    func testCaptureFrenchStoreScreenshots() throws {
+        try captureStoreScreenshots(language: "fr", locale: "fr_FR", fileNameLocale: "fr")
+    }
+
+    func testCaptureSpanishStoreScreenshots() throws {
+        try captureStoreScreenshots(language: "es", locale: "es_ES", fileNameLocale: "es-es")
+    }
+
+    private func captureStoreScreenshots(
+        language: String,
+        locale: String,
+        fileNameLocale: String,
+        capturesAfterMove: Bool = false
+    ) throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-AppleLanguages", "(\(language))", "-AppleLocale", locale]
+        app.launch()
+
+        let twoPlayerButton = app.buttons["startTwoPlayerButton"]
+        XCTAssertTrue(twoPlayerButton.waitForExistence(timeout: 5))
+        let menuIsHittable = NSPredicate(format: "isHittable == true")
+        expectation(for: menuIsHittable, evaluatedWith: twoPlayerButton)
+        waitForExpectations(timeout: 3)
+        keepScreenshot(named: "01-\(fileNameLocale)-menu")
+
+        let easyCPUButton = app.buttons["startCPUButton-easy"]
+        XCTAssertTrue(easyCPUButton.waitForExistence(timeout: 2))
+        easyCPUButton.tap()
+
+        let openingMove = app.buttons["boardCell-2-3"]
+        XCTAssertTrue(openingMove.waitForExistence(timeout: 3))
+        keepScreenshot(named: "02-\(fileNameLocale)-cpu-start")
+
+        if capturesAfterMove {
+            openingMove.tap()
+            Thread.sleep(forTimeInterval: 1.5)
+            keepScreenshot(named: "03-\(fileNameLocale)-cpu-after-move")
+        }
+    }
+
+    private func keepScreenshot(named name: String) {
+        let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        attachment.name = name
+        attachment.lifetime = .keepAlways
+        add(attachment)
     }
 
     func testLaunchPerformance() throws {
