@@ -93,7 +93,7 @@ final class OthelloAppUITests: XCTestCase {
         let menuIsHittable = NSPredicate(format: "isHittable == true")
         expectation(for: menuIsHittable, evaluatedWith: twoPlayerButton)
         waitForExpectations(timeout: 3)
-        Thread.sleep(forTimeInterval: 1.0)
+        Thread.sleep(forTimeInterval: 3.0)
         keepScreenshot(named: "01-\(fileNameLocale)-menu")
 
         let easyCPUButton = app.buttons["startCPUButton-easy"]
@@ -102,7 +102,7 @@ final class OthelloAppUITests: XCTestCase {
 
         let openingMove = app.buttons["boardCell-2-3"]
         XCTAssertTrue(openingMove.waitForExistence(timeout: 3))
-        Thread.sleep(forTimeInterval: 0.5)
+        Thread.sleep(forTimeInterval: 2.0)
         keepScreenshot(named: "02-\(fileNameLocale)-cpu-start")
 
         if capturesAfterMove {
