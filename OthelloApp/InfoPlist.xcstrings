@@ -9,6 +9,7 @@
         "es" : { "stringUnit" : { "state" : "translated", "value" : "Othello" } },
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Othello" } },
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "オセロ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "오셀로" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Othello" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "黑白棋" } }
       }

@@ -42,6 +42,10 @@ final class OthelloAppTests: XCTestCase {
             Expectation(
                 locale: "es", black: "Negras", twoPlayers: "Dos jugadores",
                 position: "fila 3, columna 4", move: "Negras ha puesto una ficha en fila 3, columna 4, miau"
+            ),
+            Expectation(
+                locale: "ko", black: "흑돌", twoPlayers: "2인 대전",
+                position: "3행 4열", move: "흑돌이 3행 4열에 돌을 놓았다냥"
             )
         ]
 

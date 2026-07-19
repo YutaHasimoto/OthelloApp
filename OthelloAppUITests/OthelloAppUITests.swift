@@ -53,6 +53,16 @@ final class OthelloAppUITests: XCTestCase {
         XCTAssertEqual(twoPlayerButton.label, "Two Players")
     }
 
+    func testKoreanLocalizationIsDisplayed() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-AppleLanguages", "(ko)", "-AppleLocale", "ko_KR"]
+        app.launch()
+
+        let twoPlayerButton = app.buttons["startTwoPlayerButton"]
+        XCTAssertTrue(twoPlayerButton.waitForExistence(timeout: 5))
+        XCTAssertEqual(twoPlayerButton.label, "2인 대전")
+    }
+
     func testCaptureEnglishStoreScreenshots() throws {
         try captureStoreScreenshots(
             language: "en",
@@ -76,6 +86,10 @@ final class OthelloAppUITests: XCTestCase {
 
     func testCaptureSpanishStoreScreenshots() throws {
         try captureStoreScreenshots(language: "es", locale: "es_ES", fileNameLocale: "es-es")
+    }
+
+    func testCaptureKoreanStoreScreenshots() throws {
+        try captureStoreScreenshots(language: "ko", locale: "ko_KR", fileNameLocale: "ko")
     }
 
     private func captureStoreScreenshots(

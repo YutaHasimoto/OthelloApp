@@ -10,7 +10,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "%1$@, %2$@" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "%1$@, %2$@" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%1$@，%2$@" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%1$@、%2$@" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%1$@、%2$@" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%1$@, %2$@" } }
       }
     },
     "accessibility.board_cell_legal" : {
@@ -22,7 +23,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "%1$@, %2$@, coup possible" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "%1$@, %2$@, jogada disponível" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%1$@，%2$@，可以落子" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%1$@、%2$@、置ける場所" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%1$@、%2$@、置ける場所" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%1$@, %2$@, 놓을 수 있는 칸" } }
       }
     },
     "accessibility.dismiss_result" : {
@@ -33,7 +35,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fermer les résultats" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Fechar resultados" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "关闭结果" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "リザルトを閉じる" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "リザルトを閉じる" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "결과 닫기" } }
       }
     },
     "accessibility.locked" : {
@@ -45,7 +48,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "%@, verrouillé" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "%@, bloqueado" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@，已锁定" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@、ロック中" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@、ロック中" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%@, 잠김" } }
       }
     },
     "accessibility.show_board" : {
@@ -56,7 +60,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Afficher le plateau, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Mostrar o tabuleiro, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "显示棋盘，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "盤面を表示するにゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "盤面を表示するにゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "보드를 표시한다냥" } }
       }
     },
     "alert.reset.cancel" : {
@@ -67,7 +72,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Continuer" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Continuar jogando" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "继续游戏" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "続ける" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "続ける" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "계속하기" } }
       }
     },
     "alert.reset.confirm" : {
@@ -78,7 +84,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Recommencer" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Reiniciar" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "重新开始" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "やりなおす" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "やりなおす" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "다시 시작" } }
       }
     },
     "alert.reset.message" : {
@@ -89,7 +96,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Remet le plateau à sa position initiale." } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Volta o tabuleiro à posição inicial." } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "将当前棋盘恢复到初始状态。" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "今の盤面を最初からに戻すにゃ。" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "今の盤面を最初からに戻すにゃ。" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "현재 보드를 시작 상태로 되돌린다냥." } }
       }
     },
     "alert.reset.title" : {
@@ -100,7 +108,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Recommencer la partie, miaou ?" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Reiniciar a partida, miau?" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "要重新开始游戏吗，喵？" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ゲームをやりなおすにゃ？" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ゲームをやりなおすにゃ？" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "게임을 다시 시작할 거냥?" } }
       }
     },
     "board.position" : {
@@ -112,7 +121,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "ligne %1$lld, colonne %2$lld" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "linha %1$lld, coluna %2$lld" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "第%1$lld行，第%2$lld列" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld行%2$lld列" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld行%2$lld列" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%1$lld행 %2$lld열" } }
       }
     },
     "celebration.unlock_message" : {
@@ -123,7 +133,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Un nouvel adversaire t’attend, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Um novo rival espera por você, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "新的对手在等你，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "新しい相手が待ってるにゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "新しい相手が待ってるにゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "새로운 상대가 기다리고 있다냥" } }
       }
     },
     "celebration.unlock_title" : {
@@ -134,7 +145,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Oni débloqué, miaou !" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Oni desbloqueado, miau!" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "鬼级已解锁，喵！" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "鬼 解放にゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "鬼 解放にゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "오니 난이도 해제다냥!" } }
       }
     },
     "celebration.victory_message" : {
@@ -145,7 +157,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Tu as battu l’ordinateur, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Você venceu a CPU, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "你打败了电脑，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPUに勝ったにゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPUに勝ったにゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "CPU를 이겼다냥" } }
       }
     },
     "celebration.victory_title" : {
@@ -156,7 +169,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Victoire, miaou !" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Vitória, miau!" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "胜利啦，喵！" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "勝利にゃ！" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "勝利にゃ！" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "승리다냥!" } }
       }
     },
     "control.menu" : {
@@ -167,7 +181,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Menu" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Menu" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "菜单" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メニュー" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メニュー" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "메뉴" } }
       }
     },
     "control.reset" : {
@@ -178,7 +193,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Recommencer" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Reiniciar" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "重新开始" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "やりなおし" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "やりなおし" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "다시 시작" } }
       }
     },
     "control.undo" : {
@@ -189,7 +205,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Annuler le coup" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Desfazer jogada" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "悔棋" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "一手戻る" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "一手戻る" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "한 수 무르기" } }
       }
     },
     "difficulty.easy" : {
@@ -200,7 +217,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Facile" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Fácil" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "简单" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "やさしい" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "やさしい" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "쉬움" } }
       }
     },
     "difficulty.normal" : {
@@ -211,7 +229,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Normal" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "普通" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ふつう" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ふつう" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "보통" } }
       }
     },
     "difficulty.oni" : {
@@ -222,7 +241,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Oni" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Oni" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "鬼级" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "鬼" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "鬼" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "오니" } }
       }
     },
     "difficulty.strong" : {
@@ -233,7 +253,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Difficile" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Difícil" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "困难" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "つよい" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "つよい" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "어려움" } }
       }
     },
     "disc.black" : {
@@ -244,7 +265,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Noir" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Pretas" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "黑棋" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "黒" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "黒" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "흑돌" } }
       }
     },
     "disc.empty" : {
@@ -255,7 +277,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Vide" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Vazio" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "空位" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "空き" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "空き" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "빈칸" } }
       }
     },
     "disc.unit" : {
@@ -266,7 +289,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "pions" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "peças" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "枚" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "石" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "石" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "개" } }
       }
     },
     "disc.white" : {
@@ -277,7 +301,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Blanc" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Brancas" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "白棋" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "白" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "白" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "백돌" } }
       }
     },
     "game.cpu_thinking" : {
@@ -288,7 +313,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "L’ordinateur réfléchit, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "A CPU está pensando, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "电脑正在思考，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPUが考え中にゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPUが考え中にゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "CPU가 생각 중이다냥" } }
       }
     },
     "game.draw" : {
@@ -299,7 +325,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Match nul, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Empate, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "平局，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "引き分けにゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "引き分けにゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "무승부다냥" } }
       }
     },
     "game.invalid_move" : {
@@ -310,7 +337,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Impossible de poser un pion ici, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Não dá para colocar uma peça aí, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "那里不能落子，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "そこには置けないにゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "そこには置けないにゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "거기에는 놓을 수 없다냥" } }
       }
     },
     "game.move" : {
@@ -322,7 +350,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "%1$@ a posé un pion en %2$@, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "%1$@ colocou uma peça em %2$@, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%1$@在%2$@落子，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%1$@が%2$@に置いたにゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%1$@が%2$@に置いたにゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%1$@이 %2$@에 돌을 놓았다냥" } }
       }
     },
     "game.pass" : {
@@ -334,7 +363,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "%@ ne peut pas jouer et passe, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "%@ não tem jogada e passa, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@无棋可下，跳过回合，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@は置けないのでパスにゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@は置けないのでパスにゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%@은 놓을 곳이 없어 차례를 넘긴다냥" } }
       }
     },
     "game.start_black" : {
@@ -345,7 +375,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les noirs commencent, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "As pretas começam, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "黑棋先行，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "黒からスタートにゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "黒からスタートにゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "흑돌부터 시작이다냥" } }
       }
     },
     "game.turn" : {
@@ -357,7 +388,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Au tour de %@, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Vez de %@, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "轮到%@，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@の番にゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@の番にゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%@ 차례다냥" } }
       }
     },
     "game.undo" : {
@@ -368,7 +400,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Coup annulé, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Jogada desfeita, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "已悔一步，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "一手戻したにゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "一手戻したにゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "한 수를 되돌렸다냥" } }
       }
     },
     "game.winner" : {
@@ -380,7 +413,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Les %@ gagnent, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "As %@ vencem, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@获胜，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@の勝ちにゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "%@の勝ちにゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%@ 승리다냥" } }
       }
     },
     "menu.cpu_battle" : {
@@ -391,7 +425,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Jouer contre l’ordinateur" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Jogar contra a CPU" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "对战电脑" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU対戦" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU対戦" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "CPU와 대전" } }
       }
     },
     "menu.two_player_battle" : {
@@ -402,7 +437,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Deux joueurs" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Dois jogadores" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "双人对战" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "2人対戦" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "2人対戦" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "2인 대전" } }
       }
     },
     "mode.cpu" : {
@@ -413,7 +449,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ordinateur" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "CPU" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "电脑" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "CPU" } }
       }
     },
     "mode.two_players" : {
@@ -424,7 +461,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "2 joueurs" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "2 jogadores" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "双人" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "2人" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "2人" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "2인" } }
       }
     },
     "player.cpu" : {
@@ -436,7 +474,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ordinateur %@" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@电脑" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@" } }
       }
     },
     "result.cpu_draw" : {
@@ -448,7 +487,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Égalité contre l’ordinateur %@, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Empate contra a CPU %@, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "与%@电脑打成平局，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@と引き分けにゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@と引き分けにゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%@ CPU와 비겼다냥" } }
       }
     },
     "result.cpu_victory" : {
@@ -460,7 +500,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "L’ordinateur %@ gagne, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "A CPU %@ venceu, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "%@电脑获胜，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@の勝利にゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@の勝利にゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%@ CPU가 이겼다냥" } }
       }
     },
     "result.human_victory" : {
@@ -472,7 +513,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Tu as battu l’ordinateur %@, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Você venceu a CPU %@, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "你打败了%@电脑，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@に勝利したにゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "CPU %@に勝利したにゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "%@ CPU를 이겼다냥" } }
       }
     },
     "result.in_progress" : {
@@ -483,7 +525,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Partie en cours, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Partida em andamento, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "对局进行中，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "対戦中にゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "対戦中にゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "대전 중이다냥" } }
       }
     },
     "result.label" : {
@@ -494,7 +537,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "RÉSULTAT" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "RESULTADO" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "结果" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "RESULT" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "RESULT" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "결과" } }
       }
     },
     "result.menu" : {
@@ -505,7 +549,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Retour au menu" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Voltar ao menu" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "返回菜单" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メニューへ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "メニューへ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "메뉴로" } }
       }
     },
     "result.play_again" : {
@@ -516,7 +561,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Rejouer" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Jogar novamente" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "再来一局" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "もう一度対戦" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "もう一度対戦" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "다시 대전" } }
       }
     },
     "result.play_to_finish" : {
@@ -527,7 +573,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Joue jusqu’au bout pour décider, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Jogue até o fim para decidir, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "下到最后决出胜负吧，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最後まで打って勝負を決めるにゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最後まで打って勝負を決めるにゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "끝까지 두어 승부를 결정하자냥" } }
       }
     },
     "result.score" : {
@@ -539,7 +586,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Score final : noirs %1$lld, blancs %2$lld" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Placar final: pretas %1$lld, brancas %2$lld" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "最终比分：黑棋%1$lld枚，白棋%2$lld枚" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最終スコア、黒%1$lld石、白%2$lld石" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最終スコア、黒%1$lld石、白%2$lld石" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "최종 점수: 흑돌 %1$lld개, 백돌 %2$lld개" } }
       }
     },
     "result.two_player_message" : {
@@ -550,7 +598,8 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Consulte le score et rejoue, miaou" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Confira o placar e jogue de novo, miau" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "看看最终比分，马上再来一局吧，喵" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最終スコアを確認して、すぐ再戦できるにゃ" } }
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最終スコアを確認して、すぐ再戦できるにゃ" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "최종 점수를 확인하고 바로 다시 대전할 수 있다냥" } }
       }
     }
   },
