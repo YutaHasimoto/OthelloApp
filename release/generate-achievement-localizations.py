@@ -26,39 +26,39 @@ DIFFICULTY_COPY = {
     ],
     "en-US": [
         ("Rookie", "Defeat the Easy CPU.", "Defeated the Easy CPU."),
-        ("Competitor", "Defeat the Normal CPU.", "Defeated the Normal CPU."),
-        ("Master", "Defeat the Strong CPU.", "Defeated the Strong CPU."),
-        ("Legend", "Defeat the Oni CPU.", "Defeated the Oni CPU."),
+        ("Skilled Player", "Beat the Normal CPU", "Defeated the Normal CPU"),
+        ("Master", "Beat the Strong CPU", "Defeated the Strong CPU"),
+        ("Legend", "Beat the Oni CPU", "Defeated the Oni CPU"),
     ],
     "es-ES": [
         ("Novato", "Vence a la CPU en Fácil.", "Has vencido a la CPU en Fácil."),
-        ("Competente", "Vence a la CPU en Normal.", "Has vencido a la CPU en Normal."),
-        ("Maestro", "Vence a la CPU en Difícil.", "Has vencido a la CPU en Difícil."),
-        ("Leyenda", "Vence a la CPU en Oni.", "Has vencido a la CPU en Oni."),
+        ("Jugador experto", "Vence a la CPU normal", "Venciste a la CPU normal"),
+        ("Maestro", "Vence a la CPU difícil", "Venciste a la CPU difícil"),
+        ("Leyenda", "Vence a la CPU Oni", "Venciste a la CPU Oni"),
     ],
     "fr": [
         ("Débutant", "Bats l'IA en mode Facile.", "Tu as battu l'IA en mode Facile."),
-        ("Confirmé", "Bats l'IA en mode Normal.", "Tu as battu l'IA en mode Normal."),
-        ("Maître", "Bats l'IA en mode Difficile.", "Tu as battu l'IA en mode Difficile."),
-        ("Légende", "Bats l'IA en mode Oni.", "Tu as battu l'IA en mode Oni."),
+        ("Joueur confirmé", "Battez l’IA normale", "Vous avez battu l’IA normale"),
+        ("Maître", "Battez l’IA forte", "Vous avez battu l’IA forte"),
+        ("Légende", "Battez l’IA Oni", "Vous avez battu l’IA Oni"),
     ],
     "ko": [
         ("초보", "쉬움 난이도 CPU를 이기세요.", "쉬움 난이도 CPU를 이겼습니다."),
-        ("실력자", "보통 난이도 CPU를 이기세요.", "보통 난이도 CPU를 이겼습니다."),
-        ("달인", "어려움 난이도 CPU를 이기세요.", "어려움 난이도 CPU를 이겼습니다."),
-        ("전설", "오니 난이도 CPU를 이기세요.", "오니 난이도 CPU를 이겼습니다."),
+        ("한 사람 몫", "보통 CPU를 이겨 보세요", "보통 CPU에게 승리했습니다"),
+        ("달인", "강한 CPU를 이겨 보세요", "강한 CPU에게 승리했습니다"),
+        ("레전드", "오니 CPU를 이겨 보세요", "오니 CPU에게 승리했습니다"),
     ],
     "pt-BR": [
         ("Novato", "Vença a CPU no nível Fácil.", "Você venceu a CPU no nível Fácil."),
-        ("Competente", "Vença a CPU no nível Normal.", "Você venceu a CPU no nível Normal."),
-        ("Mestre", "Vença a CPU no nível Difícil.", "Você venceu a CPU no nível Difícil."),
-        ("Lenda", "Vença a CPU no nível Oni.", "Você venceu a CPU no nível Oni."),
+        ("Jogador experiente", "Vença a CPU normal", "Você venceu a CPU normal"),
+        ("Mestre", "Vença a CPU forte", "Você venceu a CPU forte"),
+        ("Lenda", "Vença a CPU Oni", "Você venceu a CPU Oni"),
     ],
     "zh-Hans": [
         ("新手", "击败简单难度的电脑。", "已击败简单难度的电脑。"),
-        ("独当一面", "击败普通难度的电脑。", "已击败普通难度的电脑。"),
-        ("达人", "击败困难难度的电脑。", "已击败困难难度的电脑。"),
-        ("传奇", "击败鬼级难度的电脑。", "已击败鬼级难度的电脑。"),
+        ("独当一面", "击败普通电脑", "击败了普通电脑"),
+        ("达人", "击败强力电脑", "击败了强力电脑"),
+        ("传奇", "击败鬼级电脑", "击败了鬼级电脑"),
     ],
 }
 
@@ -77,12 +77,12 @@ def streak_copy(value: int, locale: str) -> tuple[str, str, str]:
     n = number(value, locale)
     return {
         "ja": (f"連戦連勝 {n}", f"CPU戦で{n}連勝しよう", f"CPU戦で{n}連勝した"),
-        "en-US": (f"{n}-Win Streak", f"Win {n} CPU games in a row.", f"Won {n} CPU games in a row."),
-        "es-ES": (f"Racha de {n} victorias", f"Gana {n} partidas seguidas contra la CPU.", f"Ganaste {n} partidas seguidas contra la CPU."),
-        "fr": (f"Série de {n} victoires", f"Gagne {n} parties de suite contre l'IA.", f"Tu as gagné {n} parties de suite contre l'IA."),
-        "ko": (f"{n}연승", f"CPU 대전에서 {n}연승을 달성하세요.", f"CPU 대전에서 {n}연승을 달성했습니다."),
-        "pt-BR": (f"{n} vitórias seguidas", f"Vença {n} partidas seguidas contra a CPU.", f"Você venceu {n} partidas seguidas contra a CPU."),
-        "zh-Hans": (f"{n}连胜", f"在电脑对战中取得{n}连胜。", f"已在电脑对战中取得{n}连胜。"),
+        "en-US": (f"{n}-Win Streak", f"Win {n} CPU games in a row", f"Won {n} CPU games in a row"),
+        "es-ES": (f"Racha de {n} victorias", f"Gana {n} partidas seguidas contra la CPU", f"Ganaste {n} partidas seguidas contra la CPU"),
+        "fr": (f"Série de {n} victoires", f"Gagnez {n} parties de suite contre l’IA", f"Vous avez gagné {n} parties de suite contre l’IA"),
+        "ko": (f"{n}연승", f"CPU전에서 {n}연승하세요", f"CPU전에서 {n}연승을 달성했습니다"),
+        "pt-BR": (f"Sequência de {n} vitórias", f"Vença {n} partidas seguidas contra a CPU", f"Você venceu {n} partidas seguidas contra a CPU"),
+        "zh-Hans": (f"{n}连胜", f"连续赢得{n}场电脑对局", f"已连续赢得{n}场电脑对局"),
     }[locale]
 
 
