@@ -9,6 +9,79 @@ import XCTest
 @testable import OthelloApp
 
 final class OthelloAppTests: XCTestCase {
+    func testAchievementMilestonesAndCPUStreak() {
+        var progress = AchievementProgress()
+        for _ in 0..<30 {
+            progress.record(mode: .humanVsCPU, difficulty: .easy, winner: .black)
+        }
+
+        XCTAssertEqual(progress.totalCPUWins, 30)
+        XCTAssertEqual(progress.currentCPUWinStreak, 30)
+        XCTAssertTrue(progress.achievedIdentifiers.contains("othello.cpu.easy"))
+        XCTAssertTrue(progress.achievedIdentifiers.contains("othello.streak.30"))
+        XCTAssertTrue(progress.achievedIdentifiers.contains("othello.wins.30"))
+        XCTAssertFalse(progress.achievedIdentifiers.contains("othello.wins.100"))
+
+        progress.record(mode: .humanVsCPU, difficulty: .normal, winner: nil)
+        XCTAssertEqual(progress.currentCPUWinStreak, 0)
+        XCTAssertTrue(progress.achievedIdentifiers.contains("othello.streak.30"))
+
+        progress.record(mode: .humanVsCPU, difficulty: .strong, winner: .white)
+        XCTAssertEqual(progress.currentCPUWinStreak, 0)
+        XCTAssertFalse(progress.achievedIdentifiers.contains("othello.cpu.strong"))
+    }
+
+    func testTwoPlayerCompletionCountsAt101WithoutChangingCPUStreak() {
+        var progress = AchievementProgress()
+        progress.record(mode: .humanVsCPU, difficulty: .oni, winner: .black)
+        for _ in 0..<100 {
+            progress.record(mode: .twoPlayers, difficulty: .normal, winner: nil)
+        }
+
+        XCTAssertEqual(progress.currentCPUWinStreak, 1)
+        XCTAssertFalse(progress.achievedIdentifiers.contains("othello.two_player.101"))
+
+        progress.record(mode: .twoPlayers, difficulty: .normal, winner: .white)
+        XCTAssertEqual(progress.completedTwoPlayerGames, 101)
+        XCTAssertTrue(progress.achievedIdentifiers.contains("othello.two_player.101"))
+        XCTAssertTrue(progress.achievedIdentifiers.contains("othello.cpu.oni"))
+    }
+
+    func testAchievementDefinitionContainsExactly20Identifiers() {
+        var progress = AchievementProgress()
+        for difficulty in CPUDifficulty.allCases {
+            progress.record(mode: .humanVsCPU, difficulty: difficulty, winner: .black)
+        }
+        for _ in 0..<9996 {
+            progress.record(mode: .humanVsCPU, difficulty: .easy, winner: .black)
+        }
+        for _ in 0..<101 {
+            progress.record(mode: .twoPlayers, difficulty: .easy, winner: nil)
+        }
+
+        XCTAssertEqual(progress.achievedIdentifiers.count, 20)
+        XCTAssertTrue(progress.achievedIdentifiers.contains("othello.wins.10000"))
+        XCTAssertTrue(progress.achievedIdentifiers.contains("othello.streak.30"))
+    }
+
+    @MainActor
+    func testFinishedGameCannotBeUndone() {
+        var board = Array(repeating: Disc.black, count: OthelloGame.cellCount)
+        board[OthelloGame.index(row: 0, column: 0)] = .empty
+        board[OthelloGame.index(row: 0, column: 1)] = .white
+        let game = OthelloGame(board: board, currentPlayer: .black)
+        let viewModel = OthelloGameViewModel(game: game)
+
+        viewModel.tap(position: BoardPosition(row: 0, column: 0))
+        XCTAssertTrue(viewModel.game.isFinished)
+        XCTAssertFalse(viewModel.canUndo)
+        let finalBoard = viewModel.game.board
+
+        viewModel.undo()
+        XCTAssertTrue(viewModel.game.isFinished)
+        XCTAssertEqual(viewModel.game.board, finalBoard)
+    }
+
     func testAllLocalizationsAreBundledAndFormatted() throws {
         struct Expectation {
             let locale: String

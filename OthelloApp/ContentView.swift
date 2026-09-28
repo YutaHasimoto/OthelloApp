@@ -6,6 +6,7 @@
 //
 
 import AVFoundation
+import GameKit
 import StoreKit
 import SwiftUI
 
@@ -300,6 +301,154 @@ enum CPUDifficulty: String, CaseIterable, Identifiable {
 
     var requiresUnlock: Bool {
         self == .oni
+    }
+}
+
+/// Local progress is kept per Game Center player so one person's achievements
+/// are never reported to another signed-in account.
+struct AchievementProgress: Codable, Equatable {
+    var totalCPUWins = 0
+    var currentCPUWinStreak = 0
+    var bestCPUWinStreak = 0
+    var completedTwoPlayerGames = 0
+    var clearedDifficulties: Set<String> = []
+
+    mutating func record(mode: PlayMode, difficulty: CPUDifficulty, winner: Disc?) {
+        switch mode {
+        case .humanVsCPU:
+            if winner == .black {
+                if totalCPUWins < Int.max { totalCPUWins += 1 }
+                if currentCPUWinStreak < Int.max { currentCPUWinStreak += 1 }
+                bestCPUWinStreak = max(bestCPUWinStreak, currentCPUWinStreak)
+                clearedDifficulties.insert(difficulty.rawValue)
+            } else {
+                currentCPUWinStreak = 0
+            }
+        case .twoPlayers:
+            if completedTwoPlayerGames < Int.max { completedTwoPlayerGames += 1 }
+        }
+    }
+
+    var achievedIdentifiers: Set<String> {
+        var identifiers = Set(clearedDifficulties.map { "othello.cpu.\($0)" })
+        for threshold in [3, 5, 10, 15, 20, 25, 30] where bestCPUWinStreak >= threshold {
+            identifiers.insert("othello.streak.\(threshold)")
+        }
+        for threshold in [1, 3, 5, 10, 30, 100, 1000, 10000] where totalCPUWins >= threshold {
+            identifiers.insert("othello.wins.\(threshold)")
+        }
+        if completedTwoPlayerGames >= 101 {
+            identifiers.insert("othello.two_player.101")
+        }
+        return identifiers
+    }
+}
+
+@MainActor
+final class AchievementTracker {
+    static let shared = AchievementTracker()
+
+    private static let progressKey = "achievementProgressByPlayer.v1"
+    private static let reportedKey = "achievementReportedByPlayer.v1"
+    private static let guestPlayerID = "guest"
+
+    private let defaults: UserDefaults
+    private var progressByPlayer: [String: AchievementProgress]
+    private var reportedByPlayer: [String: Set<String>]
+    private var hasStartedAuthentication = false
+    private var isReporting = false
+    private var shouldReportAgain = false
+
+    init(defaults: UserDefaults = .standard) {
+        self.defaults = defaults
+        if let data = defaults.data(forKey: Self.progressKey),
+           let decoded = try? JSONDecoder().decode([String: AchievementProgress].self, from: data) {
+            progressByPlayer = decoded
+        } else {
+            progressByPlayer = [:]
+        }
+        if let data = defaults.data(forKey: Self.reportedKey),
+           let decoded = try? JSONDecoder().decode([String: Set<String>].self, from: data) {
+            reportedByPlayer = decoded
+        } else {
+            reportedByPlayer = [:]
+        }
+    }
+
+    func startAuthentication() {
+        guard !hasStartedAuthentication else { return }
+        hasStartedAuthentication = true
+
+        GKLocalPlayer.local.authenticateHandler = { [weak self] viewController, _ in
+            Task { @MainActor in
+                guard let self else { return }
+                if let viewController {
+                    let root = UIApplication.shared.connectedScenes
+                        .compactMap { $0 as? UIWindowScene }
+                        .first(where: { $0.activationState == .foregroundActive })?
+                        .windows.first(where: \.isKeyWindow)?.rootViewController
+                    root?.present(viewController, animated: true)
+                } else if GKLocalPlayer.local.isAuthenticated {
+                    self.reportAchievementsIfPossible()
+                }
+            }
+        }
+    }
+
+    func recordFinishedGame(mode: PlayMode, difficulty: CPUDifficulty, winner: Disc?) {
+        let playerID = authenticatedPlayerID ?? Self.guestPlayerID
+        var progress = progressByPlayer[playerID] ?? AchievementProgress()
+        progress.record(mode: mode, difficulty: difficulty, winner: winner)
+        progressByPlayer[playerID] = progress
+        persist()
+        reportAchievementsIfPossible()
+    }
+
+    private var authenticatedPlayerID: String? {
+        guard GKLocalPlayer.local.isAuthenticated else { return nil }
+        let playerID = GKLocalPlayer.local.gamePlayerID
+        return playerID.isEmpty ? nil : playerID
+    }
+
+    private func persist() {
+        guard let data = try? JSONEncoder().encode(progressByPlayer) else { return }
+        defaults.set(data, forKey: Self.progressKey)
+        if let reportedData = try? JSONEncoder().encode(reportedByPlayer) {
+            defaults.set(reportedData, forKey: Self.reportedKey)
+        }
+    }
+
+    private func reportAchievementsIfPossible() {
+        guard let playerID = authenticatedPlayerID else { return }
+        if isReporting {
+            shouldReportAgain = true
+            return
+        }
+        let identifiers = (progressByPlayer[playerID]?.achievedIdentifiers ?? [])
+            .subtracting(reportedByPlayer[playerID] ?? [])
+        guard !identifiers.isEmpty else { return }
+
+        isReporting = true
+        let achievements = identifiers.sorted().map { identifier -> GKAchievement in
+            let achievement = GKAchievement(identifier: identifier)
+            achievement.percentComplete = 100
+            achievement.showsCompletionBanner = true
+            return achievement
+        }
+        GKAchievement.report(achievements) { [weak self] error in
+            Task { @MainActor in
+                guard let self else { return }
+                if error == nil {
+                    self.reportedByPlayer[playerID, default: []].formUnion(identifiers)
+                    self.persist()
+                }
+                self.isReporting = false
+                if self.shouldReportAgain {
+                    self.shouldReportAgain = false
+                    self.reportAchievementsIfPossible()
+                }
+            }
+        }
     }
 }
 
@@ -833,7 +982,7 @@ final class OthelloGameViewModel: ObservableObject {
     }
 
     var canUndo: Bool {
-        !history.isEmpty && !isThinking
+        !history.isEmpty && !isThinking && !game.isFinished
     }
 
     var didHumanWinAgainstCPU: Bool {
@@ -895,7 +1044,7 @@ final class OthelloGameViewModel: ObservableObject {
     }
 
     func undo() {
-        guard let previous = history.popLast(), !isThinking else {
+        guard !game.isFinished, !isThinking, let previous = history.popLast() else {
             return
         }
 
@@ -1065,6 +1214,7 @@ struct ContentView: View {
     @State private var victoryCelebrationID = 0
     @State private var celebratedVictoryMoveCount: Int?
     @State private var isResultScreenDismissed = false
+    @State private var hasRecordedCurrentGame = false
     @State private var victoryCelebrationTitle = L10n.string("celebration.victory_title")
     @State private var victoryCelebrationMessage = L10n.string("celebration.victory_message")
 
@@ -1105,6 +1255,7 @@ struct ContentView: View {
             Button(L10n.string("alert.reset.cancel"), role: .cancel) {}
             Button(L10n.string("alert.reset.confirm"), role: .destructive) {
                 resetVictoryCelebrationState()
+                hasRecordedCurrentGame = false
                 viewModel.resetGame(playFeedback: true)
             }
         } message: {
@@ -1134,6 +1285,7 @@ struct ContentView: View {
             feedbackController.play(event)
         }
         .onAppear {
+            AchievementTracker.shared.startAuthentication()
             if screen == .game {
                 feedbackController.startBackgroundMusic()
             }
@@ -1232,6 +1384,7 @@ struct ContentView: View {
                         difficulty: viewModel.difficulty,
                         playAgainAction: {
                             isResultScreenDismissed = false
+                            hasRecordedCurrentGame = false
                             viewModel.resetGame(playFeedback: true)
                         },
                         menuAction: showMenu,
@@ -1349,6 +1502,7 @@ struct ContentView: View {
         feedbackController.play(.menuSelect)
         resetVictoryCelebrationState()
         isResultScreenDismissed = false
+        hasRecordedCurrentGame = false
         viewModel.playMode = .twoPlayers
         viewModel.resetGame()
         screen = .game
@@ -1363,6 +1517,7 @@ struct ContentView: View {
         feedbackController.play(.menuSelect)
         resetVictoryCelebrationState()
         isResultScreenDismissed = false
+        hasRecordedCurrentGame = false
         viewModel.difficulty = difficulty
         viewModel.playMode = .humanVsCPU
         viewModel.resetGame()
@@ -1419,6 +1574,14 @@ struct ContentView: View {
     }
 
     private func handleGameFinished() {
+        if !hasRecordedCurrentGame {
+            hasRecordedCurrentGame = true
+            AchievementTracker.shared.recordFinishedGame(
+                mode: viewModel.playMode,
+                difficulty: viewModel.difficulty,
+                winner: viewModel.game.winner
+            )
+        }
         isResultScreenDismissed = false
         let didUnlockOni = unlockOniIfNeeded()
         requestReviewAfterAIVictoryIfNeeded()
