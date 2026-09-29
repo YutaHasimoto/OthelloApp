@@ -1,6 +1,8 @@
 # おに CPU 勝利時の黒石枚数ランキング
 
-App Store Connect の `animis.co.jp.OthelloApp` に、アプリのコードと同じ ID で Game Center ランキングを登録する。登録と審査提出は、この文書を確認したうえで App Store Connect で行う。
+App Store Connect の `animis.co.jp.OthelloApp` に、アプリのコードと同じ ID で Game Center ランキングを登録済み。
+
+2026-09-30 に下記の設定と 7 言語のローカリゼーションを保存し、詳細画面で再表示して確認した。現在の状態は「提出準備中」。審査用への追加・提出、実機での Game Center 送信とランキング表示は未実施。
 
 | 項目 | 設定値 |
 | --- | --- |
