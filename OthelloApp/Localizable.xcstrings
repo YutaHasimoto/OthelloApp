@@ -429,6 +429,30 @@
         "ko" : { "stringUnit" : { "state" : "translated", "value" : "CPU와 대전" } }
       }
     },
+    "menu.leaderboard_requires_game_center" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Sign in to Game Center to view the leaderboard." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Inicia sesión en Game Center para ver la clasificación." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connectez-vous à Game Center pour voir le classement." } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Inicie sessão no Game Center para ver o ranking." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "登录 Game Center 后即可查看排行榜。" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ランキングの表示にはGame Centerへのサインインが必要です" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "순위표를 보려면 Game Center에 로그인하세요." } }
+      }
+    },
+    "menu.oni_leaderboard" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Oni CPU Leaderboard" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Clasificación CPU Oni" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Classement CPU Oni" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Ranking da CPU Oni" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "鬼级电脑排行榜" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "おに戦ランキング" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "오니 CPU 순위표" } }
+      }
+    },
     "menu.two_player_battle" : {
       "extractionState" : "manual",
       "localizations" : {

@@ -9,6 +9,39 @@ import XCTest
 @testable import OthelloApp
 
 final class OthelloAppTests: XCTestCase {
+    func testOniVictoryDiscsLeaderboardTracksOnlyBestWinningBlackCount() {
+        var progress = AchievementProgress()
+
+        progress.record(mode: .humanVsCPU, difficulty: .oni, winner: .white, finalBlackDiscs: 20)
+        progress.record(mode: .humanVsCPU, difficulty: .oni, winner: nil, finalBlackDiscs: 32)
+        progress.record(mode: .humanVsCPU, difficulty: .strong, winner: .black, finalBlackDiscs: 63)
+        progress.record(mode: .twoPlayers, difficulty: .oni, winner: .black, finalBlackDiscs: 64)
+        XCTAssertNil(progress.bestOniVictoryBlackDiscs)
+
+        progress.record(mode: .humanVsCPU, difficulty: .oni, winner: .black, finalBlackDiscs: 40)
+        progress.record(mode: .humanVsCPU, difficulty: .oni, winner: .black, finalBlackDiscs: 38)
+        XCTAssertEqual(progress.bestOniVictoryBlackDiscs, 40)
+
+        progress.record(mode: .humanVsCPU, difficulty: .oni, winner: .black, finalBlackDiscs: 50)
+        progress.record(mode: .humanVsCPU, difficulty: .oni, winner: .black, finalBlackDiscs: 0)
+        progress.record(mode: .humanVsCPU, difficulty: .oni, winner: .black, finalBlackDiscs: 65)
+        XCTAssertEqual(progress.bestOniVictoryBlackDiscs, 50)
+    }
+
+    func testAchievementProgressDecodesSavedDataFromBeforeOniLeaderboard() throws {
+        let oldData = Data("""
+        {"totalCPUWins":3,"currentCPUWinStreak":2,"bestCPUWinStreak":2,
+         "completedTwoPlayerGames":1,"clearedDifficulties":["easy"]}
+        """.utf8)
+
+        let progress = try JSONDecoder().decode(AchievementProgress.self, from: oldData)
+        XCTAssertEqual(progress.totalCPUWins, 3)
+        XCTAssertEqual(progress.bestCPUWinStreak, 2)
+        XCTAssertEqual(progress.completedTwoPlayerGames, 1)
+        XCTAssertTrue(progress.achievedIdentifiers.contains("othello.cpu.easy"))
+        XCTAssertNil(progress.bestOniVictoryBlackDiscs)
+    }
+
     func testAchievementMilestonesAndCPUStreak() {
         var progress = AchievementProgress()
         for _ in 0..<30 {
@@ -129,6 +162,11 @@ final class OthelloAppTests: XCTestCase {
             )
             XCTAssertEqual(L10n.string("disc.black", bundle: bundle), expectation.black)
             XCTAssertEqual(L10n.string("menu.two_player_battle", bundle: bundle), expectation.twoPlayers)
+            XCTAssertNotEqual(L10n.string("menu.oni_leaderboard", bundle: bundle), "menu.oni_leaderboard")
+            XCTAssertNotEqual(
+                L10n.string("menu.leaderboard_requires_game_center", bundle: bundle),
+                "menu.leaderboard_requires_game_center"
+            )
 
             let position = L10n.format(
                 "board.position",

@@ -312,8 +312,10 @@ struct AchievementProgress: Codable, Equatable {
     var bestCPUWinStreak = 0
     var completedTwoPlayerGames = 0
     var clearedDifficulties: Set<String> = []
+    // Optional so progress saved before this leaderboard existed still decodes.
+    var bestOniVictoryBlackDiscs: Int? = nil
 
-    mutating func record(mode: PlayMode, difficulty: CPUDifficulty, winner: Disc?) {
+    mutating func record(mode: PlayMode, difficulty: CPUDifficulty, winner: Disc?, finalBlackDiscs: Int? = nil) {
         switch mode {
         case .humanVsCPU:
             if winner == .black {
@@ -321,6 +323,9 @@ struct AchievementProgress: Codable, Equatable {
                 if currentCPUWinStreak < Int.max { currentCPUWinStreak += 1 }
                 bestCPUWinStreak = max(bestCPUWinStreak, currentCPUWinStreak)
                 clearedDifficulties.insert(difficulty.rawValue)
+                if difficulty == .oni, let finalBlackDiscs, (1...64).contains(finalBlackDiscs) {
+                    bestOniVictoryBlackDiscs = max(bestOniVictoryBlackDiscs ?? 0, finalBlackDiscs)
+                }
             } else {
                 currentCPUWinStreak = 0
             }
@@ -345,19 +350,25 @@ struct AchievementProgress: Codable, Equatable {
 }
 
 @MainActor
-final class AchievementTracker {
+final class AchievementTracker: ObservableObject {
     static let shared = AchievementTracker()
 
     private static let progressKey = "achievementProgressByPlayer.v1"
     private static let reportedKey = "achievementReportedByPlayer.v1"
+    private static let reportedOniDiscsKey = "leaderboardReportedOniDiscsByPlayer.v1"
     private static let guestPlayerID = "guest"
+    static let oniDiscsLeaderboardID = "othello.cpu.oni.discs"
 
     private let defaults: UserDefaults
     private var progressByPlayer: [String: AchievementProgress]
     private var reportedByPlayer: [String: Set<String>]
+    private var reportedOniDiscsByPlayer: [String: Int]
     private var hasStartedAuthentication = false
     private var isReporting = false
     private var shouldReportAgain = false
+    private var isReportingOniDiscs = false
+    private var shouldReportOniDiscsAgain = false
+    @Published private(set) var isGameCenterAuthenticated = false
 
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
@@ -373,6 +384,13 @@ final class AchievementTracker {
         } else {
             reportedByPlayer = [:]
         }
+        if let data = defaults.data(forKey: Self.reportedOniDiscsKey),
+           let decoded = try? JSONDecoder().decode([String: Int].self, from: data) {
+            reportedOniDiscsByPlayer = decoded
+        } else {
+            reportedOniDiscsByPlayer = [:]
+        }
+        isGameCenterAuthenticated = authenticatedPlayerID != nil
     }
 
     func startAuthentication() {
@@ -382,6 +400,7 @@ final class AchievementTracker {
         GKLocalPlayer.local.authenticateHandler = { [weak self] viewController, _ in
             Task { @MainActor in
                 guard let self else { return }
+                self.isGameCenterAuthenticated = self.authenticatedPlayerID != nil
                 if let viewController {
                     let root = UIApplication.shared.connectedScenes
                         .compactMap { $0 as? UIWindowScene }
@@ -390,18 +409,26 @@ final class AchievementTracker {
                     root?.present(viewController, animated: true)
                 } else if GKLocalPlayer.local.isAuthenticated {
                     self.reportAchievementsIfPossible()
+                    self.reportOniDiscsIfPossible()
                 }
             }
         }
     }
 
-    func recordFinishedGame(mode: PlayMode, difficulty: CPUDifficulty, winner: Disc?) {
+    func retryPendingReports() {
+        isGameCenterAuthenticated = authenticatedPlayerID != nil
+        reportAchievementsIfPossible()
+        reportOniDiscsIfPossible()
+    }
+
+    func recordFinishedGame(mode: PlayMode, difficulty: CPUDifficulty, winner: Disc?, finalBlackDiscs: Int) {
         let playerID = authenticatedPlayerID ?? Self.guestPlayerID
         var progress = progressByPlayer[playerID] ?? AchievementProgress()
-        progress.record(mode: mode, difficulty: difficulty, winner: winner)
+        progress.record(mode: mode, difficulty: difficulty, winner: winner, finalBlackDiscs: finalBlackDiscs)
         progressByPlayer[playerID] = progress
         persist()
         reportAchievementsIfPossible()
+        reportOniDiscsIfPossible()
     }
 
     private var authenticatedPlayerID: String? {
@@ -415,6 +442,9 @@ final class AchievementTracker {
         defaults.set(data, forKey: Self.progressKey)
         if let reportedData = try? JSONEncoder().encode(reportedByPlayer) {
             defaults.set(reportedData, forKey: Self.reportedKey)
+        }
+        if let reportedData = try? JSONEncoder().encode(reportedOniDiscsByPlayer) {
+            defaults.set(reportedData, forKey: Self.reportedOniDiscsKey)
         }
     }
 
@@ -446,6 +476,38 @@ final class AchievementTracker {
                 if self.shouldReportAgain {
                     self.shouldReportAgain = false
                     self.reportAchievementsIfPossible()
+                }
+            }
+        }
+    }
+
+    private func reportOniDiscsIfPossible() {
+        guard let playerID = authenticatedPlayerID,
+              let best = progressByPlayer[playerID]?.bestOniVictoryBlackDiscs,
+              (1...64).contains(best),
+              best > (reportedOniDiscsByPlayer[playerID] ?? 0) else { return }
+        if isReportingOniDiscs {
+            shouldReportOniDiscsAgain = true
+            return
+        }
+
+        isReportingOniDiscs = true
+        GKLeaderboard.submitScore(
+            best,
+            context: 0,
+            player: GKLocalPlayer.local,
+            leaderboardIDs: [Self.oniDiscsLeaderboardID]
+        ) { [weak self] error in
+            Task { @MainActor in
+                guard let self else { return }
+                if error == nil {
+                    self.reportedOniDiscsByPlayer[playerID] = max(self.reportedOniDiscsByPlayer[playerID] ?? 0, best)
+                    self.persist()
+                }
+                self.isReportingOniDiscs = false
+                if self.shouldReportOniDiscsAgain {
+                    self.shouldReportOniDiscsAgain = false
+                    self.reportOniDiscsIfPossible()
                 }
             }
         }
@@ -1204,6 +1266,7 @@ struct ContentView: View {
     }
 
     @AppStorage("isOniDifficultyUnlocked") private var isOniDifficultyUnlocked = false
+    @StateObject private var achievementTracker = AchievementTracker.shared
     @StateObject private var viewModel = OthelloGameViewModel()
     @StateObject private var feedbackController = GameFeedbackController()
     @State private var screen: Screen = .menu
@@ -1215,6 +1278,7 @@ struct ContentView: View {
     @State private var celebratedVictoryMoveCount: Int?
     @State private var isResultScreenDismissed = false
     @State private var hasRecordedCurrentGame = false
+    @State private var showsOniLeaderboard = false
     @State private var victoryCelebrationTitle = L10n.string("celebration.victory_title")
     @State private var victoryCelebrationMessage = L10n.string("celebration.victory_message")
 
@@ -1261,6 +1325,9 @@ struct ContentView: View {
         } message: {
             Text(L10n.string("alert.reset.message"))
         }
+        .fullScreenCover(isPresented: $showsOniLeaderboard) {
+            OniLeaderboardView(isPresented: $showsOniLeaderboard)
+        }
         .onChange(of: viewModel.game.isFinished) { isFinished in
             if isFinished {
                 handleGameFinished()
@@ -1285,7 +1352,7 @@ struct ContentView: View {
             feedbackController.play(event)
         }
         .onAppear {
-            AchievementTracker.shared.startAuthentication()
+            achievementTracker.startAuthentication()
             if screen == .game {
                 feedbackController.startBackgroundMusic()
             }
@@ -1295,6 +1362,7 @@ struct ContentView: View {
             await hideInitialSplashAfterDelay()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
+            achievementTracker.retryPendingReports()
             viewModel.resumeTurnFlow()
         }
     }
@@ -1338,6 +1406,21 @@ struct ContentView: View {
                                 }
                             }
                             .padding(.top, 8)
+
+                            MenuChoiceButton(
+                                title: L10n.string("menu.oni_leaderboard"),
+                                systemImage: "list.number",
+                                isDisabled: !achievementTracker.isGameCenterAuthenticated,
+                                action: { showsOniLeaderboard = true }
+                            )
+                            .accessibilityIdentifier("showOniLeaderboardButton")
+
+                            if !achievementTracker.isGameCenterAuthenticated {
+                                Text(L10n.string("menu.leaderboard_requires_game_center"))
+                                    .font(.footnote.weight(.semibold))
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
                         }
                         .frame(maxWidth: 420)
 
@@ -1576,10 +1659,11 @@ struct ContentView: View {
     private func handleGameFinished() {
         if !hasRecordedCurrentGame {
             hasRecordedCurrentGame = true
-            AchievementTracker.shared.recordFinishedGame(
+            achievementTracker.recordFinishedGame(
                 mode: viewModel.playMode,
                 difficulty: viewModel.difficulty,
-                winner: viewModel.game.winner
+                winner: viewModel.game.winner,
+                finalBlackDiscs: viewModel.game.count(for: .black)
             )
         }
         isResultScreenDismissed = false
@@ -1907,6 +1991,38 @@ struct MenuChoiceButton: View {
         .buttonStyle(.plain)
         .disabled(isDisabled)
         .accessibilityLabel(isDisabled ? L10n.format("accessibility.locked", title) : title)
+    }
+}
+
+struct OniLeaderboardView: UIViewControllerRepresentable {
+    @Binding var isPresented: Bool
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(isPresented: $isPresented)
+    }
+
+    func makeUIViewController(context: Context) -> GKGameCenterViewController {
+        let controller = GKGameCenterViewController(
+            leaderboardID: AchievementTracker.oniDiscsLeaderboardID,
+            playerScope: .global,
+            timeScope: .allTime
+        )
+        controller.gameCenterDelegate = context.coordinator
+        return controller
+    }
+
+    func updateUIViewController(_ controller: GKGameCenterViewController, context: Context) {}
+
+    final class Coordinator: NSObject, GKGameCenterControllerDelegate {
+        @Binding var isPresented: Bool
+
+        init(isPresented: Binding<Bool>) {
+            _isPresented = isPresented
+        }
+
+        func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
+            isPresented = false
+        }
     }
 }
 
