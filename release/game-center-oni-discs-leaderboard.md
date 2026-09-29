@@ -21,7 +21,7 @@ Leaderboard ID は作成後に変更できない。既存の ID と重複しな�
 
 | 言語 | Display Name | Leaderboard Description | 単位 |
 | --- | --- | --- | --- |
-| 日本語 | おに勝利・黒石枚数 | おに CPU に勝利した対局で、最後に残った黒石の最多枚数 | 枚 |
+| 日本語 | オニ討伐ランキング | おに CPU に勝利した対局で、最後に残った黒石の最多枚数 | 枚 |
 | English | Black Discs vs Oni CPU | Most black discs at the end of a win against the Oni CPU | discs |
 | Español | Fichas negras contra CPU Oni | Máximo de fichas negras al ganar contra la CPU Oni | fichas |
 | Français | Pions noirs contre CPU Oni | Nombre maximal de pions noirs lors d'une victoire contre CPU Oni | pions |

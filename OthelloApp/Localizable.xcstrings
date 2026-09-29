@@ -449,7 +449,7 @@
         "fr" : { "stringUnit" : { "state" : "translated", "value" : "Classement CPU Oni" } },
         "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Ranking da CPU Oni" } },
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "鬼级电脑排行榜" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "おに戦ランキング" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "オニ討伐ランキング" } },
         "ko" : { "stringUnit" : { "state" : "translated", "value" : "오니 CPU 순위표" } }
       }
     },
