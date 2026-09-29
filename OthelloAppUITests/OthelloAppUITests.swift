@@ -43,6 +43,52 @@ final class OthelloAppUITests: XCTestCase {
         XCTAssertTrue(app.buttons["boardCell-2-3"].waitForExistence(timeout: 3))
     }
 
+    func testTwoPlayerBoardDoesNotScroll() throws {
+        try assertGameBoardDoesNotScroll(startButtonIdentifier: "startTwoPlayerButton")
+    }
+
+    func testCPUBoardDoesNotScroll() throws {
+        try assertGameBoardDoesNotScroll(startButtonIdentifier: "startCPUButton-easy")
+    }
+
+    private func assertGameBoardDoesNotScroll(startButtonIdentifier: String) throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        let startButton = app.buttons[startButtonIdentifier]
+        XCTAssertTrue(startButton.waitForExistence(timeout: 5))
+        let buttonIsHittable = NSPredicate(format: "isHittable == true")
+        expectation(for: buttonIsHittable, evaluatedWith: startButton)
+        waitForExpectations(timeout: 5)
+        startButton.tap()
+
+        assertBoardCellsStayInPlace(in: app)
+        keepScreenshot(named: "fixed-board-\(startButtonIdentifier)-portrait")
+
+        XCUIDevice.shared.orientation = .landscapeLeft
+        defer { XCUIDevice.shared.orientation = .portrait }
+        Thread.sleep(forTimeInterval: 0.5)
+        assertBoardCellsStayInPlace(in: app)
+        keepScreenshot(named: "fixed-board-\(startButtonIdentifier)-landscape")
+    }
+
+    private func assertBoardCellsStayInPlace(in app: XCUIApplication) {
+        let topCell = app.buttons["boardCell-0-0"]
+        let bottomCell = app.buttons["boardCell-7-7"]
+        XCTAssertTrue(topCell.waitForExistence(timeout: 3))
+        XCTAssertTrue(topCell.isHittable)
+        XCTAssertTrue(bottomCell.isHittable)
+
+        let topFrame = topCell.frame
+        let bottomFrame = bottomCell.frame
+        bottomCell.press(forDuration: 0.1, thenDragTo: topCell)
+
+        XCTAssertEqual(topCell.frame.minY, topFrame.minY, accuracy: 1)
+        XCTAssertEqual(bottomCell.frame.minY, bottomFrame.minY, accuracy: 1)
+        XCTAssertTrue(topCell.isHittable)
+        XCTAssertTrue(bottomCell.isHittable)
+    }
+
     func testEnglishLocalizationIsDisplayed() throws {
         let app = XCUIApplication()
         app.launchArguments += ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]

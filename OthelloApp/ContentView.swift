@@ -1556,27 +1556,24 @@ struct ContentView: View {
     private var gameScreen: some View {
         GeometryReader { geometry in
             ZStack {
-                ScrollView {
-                    VStack(spacing: viewModel.playMode == .twoPlayers ? 12 : 14) {
-                        if viewModel.playMode == .twoPlayers {
-                            twoPlayerTopControls
+                VStack(spacing: gameVerticalSpacing(for: geometry)) {
+                    if viewModel.playMode == .twoPlayers {
+                        twoPlayerTopControls
 
-                            board(in: geometry)
+                        board(in: geometry)
 
-                            twoPlayerBottomControls
-                        } else {
-                            cpuTopControls
+                        twoPlayerBottomControls
+                    } else {
+                        cpuTopControls
 
-                            board(in: geometry)
+                        board(in: geometry)
 
-                            cpuBottomControls
-                        }
+                        cpuBottomControls
                     }
-                    .padding(.horizontal, gameHorizontalPadding(for: geometry))
-                    .padding(.vertical, gameVerticalPadding(for: geometry))
-                    .frame(maxWidth: .infinity)
-                    .frame(minHeight: geometry.size.height)
                 }
+                .padding(.horizontal, gameHorizontalPadding(for: geometry))
+                .padding(.vertical, gameVerticalPadding(for: geometry))
+                .frame(width: geometry.size.width, height: geometry.size.height)
 
                 if viewModel.game.isFinished && !isResultScreenDismissed {
                     GameResultScreen(
@@ -1759,11 +1756,15 @@ struct ContentView: View {
 
     private func boardSide(for geometry: GeometryProxy) -> CGFloat {
         let controlsHeight: CGFloat = 64 * 2
-        let verticalSpacing: CGFloat = (viewModel.playMode == .twoPlayers ? 12 : 14) * 2
+        let verticalSpacing = gameVerticalSpacing(for: geometry) * 2
         let availableWidth = geometry.size.width - gameHorizontalPadding(for: geometry) * 2
         let availableHeight = geometry.size.height - gameVerticalPadding(for: geometry) * 2 - controlsHeight - verticalSpacing
 
-        return max(280, min(availableWidth, availableHeight))
+        return max(1, min(availableWidth, availableHeight))
+    }
+
+    private func gameVerticalSpacing(for geometry: GeometryProxy) -> CGFloat {
+        geometry.size.height < 400 ? 8 : (viewModel.playMode == .twoPlayers ? 12 : 14)
     }
 
     private func gameHorizontalPadding(for geometry: GeometryProxy) -> CGFloat {
@@ -2393,7 +2394,7 @@ struct OthelloBoardView: View {
     let tapAction: (BoardPosition) -> Void
 
     private let columns = Array(
-        repeating: GridItem(.flexible(minimum: 28), spacing: 0),
+        repeating: GridItem(.flexible(minimum: 1), spacing: 0),
         count: OthelloGame.boardSize
     )
 
