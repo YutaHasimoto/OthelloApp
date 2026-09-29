@@ -304,6 +304,13 @@ enum CPUDifficulty: String, CaseIterable, Identifiable {
     }
 }
 
+enum GameCenterDestination: String, Identifiable {
+    case oniLeaderboard
+    case achievements
+
+    var id: String { rawValue }
+}
+
 /// Local progress is kept per Game Center player so one person's achievements
 /// are never reported to another signed-in account.
 struct AchievementProgress: Codable, Equatable {
@@ -1278,7 +1285,9 @@ struct ContentView: View {
     @State private var celebratedVictoryMoveCount: Int?
     @State private var isResultScreenDismissed = false
     @State private var hasRecordedCurrentGame = false
-    @State private var showsOniLeaderboard = false
+    @State private var showsGameCenterMenu = false
+    @State private var requestedGameCenterDestination: GameCenterDestination?
+    @State private var activeGameCenterDestination: GameCenterDestination?
     @State private var victoryCelebrationTitle = L10n.string("celebration.victory_title")
     @State private var victoryCelebrationMessage = L10n.string("celebration.victory_message")
 
@@ -1325,8 +1334,22 @@ struct ContentView: View {
         } message: {
             Text(L10n.string("alert.reset.message"))
         }
-        .fullScreenCover(isPresented: $showsOniLeaderboard) {
-            OniLeaderboardView(isPresented: $showsOniLeaderboard)
+        .sheet(isPresented: $showsGameCenterMenu, onDismiss: {
+            activeGameCenterDestination = requestedGameCenterDestination
+            requestedGameCenterDestination = nil
+        }) {
+            if #available(iOS 16.0, *) {
+                gameCenterMenu
+                    .presentationDetents([.medium, .large])
+                    .presentationDragIndicator(.visible)
+            } else {
+                gameCenterMenu
+            }
+        }
+        .fullScreenCover(item: $activeGameCenterDestination) { destination in
+            GameCenterView(destination: destination) {
+                activeGameCenterDestination = nil
+            }
         }
         .onChange(of: viewModel.game.isFinished) { isFinished in
             if isFinished {
@@ -1372,67 +1395,162 @@ struct ContentView: View {
             ZStack {
                 OthelloBoardBackdrop()
 
-                ScrollView {
-                    VStack(spacing: 26) {
-                        Spacer(minLength: 0)
-
-                        VStack(spacing: 12) {
-                            MenuChoiceButton(
-                                title: L10n.string("menu.two_player_battle"),
-                                systemImage: "person.2.fill",
-                                action: startTwoPlayerGame
-                            )
-                            .accessibilityIdentifier("startTwoPlayerButton")
-
-                            VStack(spacing: 8) {
-                                Text(L10n.string("menu.cpu_battle"))
-                                    .font(.headline.weight(.bold))
-                                    .foregroundColor(.white.opacity(0.94))
-                                    .shadow(color: .black.opacity(0.28), radius: 2, x: 0, y: 1)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                                ForEach(CPUDifficulty.allCases) { difficulty in
-                                    let isLocked = isDifficultyLocked(difficulty)
-                                    MenuChoiceButton(
-                                        title: difficulty.title,
-                                        systemImage: cpuIcon(for: difficulty),
-                                        trailingSystemImage: isLocked ? "lock.fill" : "chevron.right",
-                                        isDisabled: isLocked,
-                                        action: {
-                                            startCPUGame(difficulty: difficulty)
-                                        }
-                                    )
-                                    .accessibilityIdentifier("startCPUButton-\(difficulty.rawValue)")
-                                }
-                            }
-                            .padding(.top, 8)
-
-                            MenuChoiceButton(
-                                title: L10n.string("menu.oni_leaderboard"),
-                                systemImage: "list.number",
-                                isDisabled: !achievementTracker.isGameCenterAuthenticated,
-                                action: { showsOniLeaderboard = true }
-                            )
-                            .accessibilityIdentifier("showOniLeaderboardButton")
-
-                            if !achievementTracker.isGameCenterAuthenticated {
-                                Text(L10n.string("menu.leaderboard_requires_game_center"))
-                                    .font(.footnote.weight(.semibold))
-                                    .foregroundColor(.white)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }
+                VStack(spacing: 0) {
+                    HStack {
+                        Spacer()
+                        Button {
+                            showsGameCenterMenu = true
+                        } label: {
+                            Image(systemName: "trophy.fill")
+                                .font(.title2.weight(.semibold))
+                                .foregroundColor(.yellow)
+                                .frame(width: 48, height: 48)
+                                .background(Color.black.opacity(0.55), in: Circle())
+                                .overlay(Circle().stroke(Color.white.opacity(0.3), lineWidth: 1))
                         }
-                        .frame(maxWidth: 420)
-
-                        Spacer(minLength: 0)
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(L10n.string("menu.game_center"))
+                        .accessibilityIdentifier("showGameCenterMenuButton")
                     }
                     .padding(.horizontal, 24)
-                    .padding(.vertical, 28)
-                    .frame(maxWidth: .infinity)
-                    .frame(minHeight: geometry.size.height)
+                    .frame(height: 60)
+
+                    ScrollView {
+                        VStack(spacing: 26) {
+                            Spacer(minLength: 0)
+
+                            VStack(spacing: 12) {
+                                MenuChoiceButton(
+                                    title: L10n.string("menu.two_player_battle"),
+                                    systemImage: "person.2.fill",
+                                    action: startTwoPlayerGame
+                                )
+                                .accessibilityIdentifier("startTwoPlayerButton")
+
+                                VStack(spacing: 8) {
+                                    Text(L10n.string("menu.cpu_battle"))
+                                        .font(.headline.weight(.bold))
+                                        .foregroundColor(.white.opacity(0.94))
+                                        .shadow(color: .black.opacity(0.28), radius: 2, x: 0, y: 1)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                                    ForEach(CPUDifficulty.allCases) { difficulty in
+                                        let isLocked = isDifficultyLocked(difficulty)
+                                        MenuChoiceButton(
+                                            title: difficulty.title,
+                                            systemImage: cpuIcon(for: difficulty),
+                                            trailingSystemImage: isLocked ? "lock.fill" : "chevron.right",
+                                            isDisabled: isLocked,
+                                            action: {
+                                                startCPUGame(difficulty: difficulty)
+                                            }
+                                        )
+                                        .accessibilityIdentifier("startCPUButton-\(difficulty.rawValue)")
+                                    }
+                                }
+                                .padding(.top, 8)
+                            }
+                            .frame(maxWidth: 420)
+
+                            Spacer(minLength: 0)
+                        }
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 28)
+                        .frame(maxWidth: .infinity)
+                        .frame(minHeight: max(0, geometry.size.height - 60))
+                    }
                 }
             }
         }
+    }
+
+    private var gameCenterMenu: some View {
+        ZStack {
+            Color(red: 0.07, green: 0.27, blue: 0.12)
+                .ignoresSafeArea()
+
+            VStack(spacing: 20) {
+                HStack {
+                    Text(L10n.string("menu.game_center"))
+                        .font(.title2.weight(.bold))
+                        .foregroundColor(.white)
+                    Spacer()
+                    Button {
+                        showsGameCenterMenu = false
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.headline.weight(.semibold))
+                            .foregroundColor(.white)
+                            .frame(width: 44, height: 44)
+                    }
+                    .accessibilityLabel(L10n.string("menu.close_game_center"))
+                    .accessibilityIdentifier("closeGameCenterMenuButton")
+                }
+
+                if !achievementTracker.isGameCenterAuthenticated {
+                    Text(L10n.string("menu.game_center_sign_in_required"))
+                        .font(.subheadline)
+                        .foregroundColor(.white.opacity(0.9))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+
+                gameCenterChoice(
+                    title: L10n.string("menu.oni_leaderboard"),
+                    systemImage: "list.number",
+                    destination: .oniLeaderboard,
+                    identifier: "showOniLeaderboardButton"
+                )
+                gameCenterChoice(
+                    title: L10n.string("menu.achievements"),
+                    systemImage: "star.fill",
+                    destination: .achievements,
+                    identifier: "showAchievementsButton"
+                )
+                Spacer(minLength: 0)
+            }
+            .padding(24)
+            .frame(maxWidth: 470)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        }
+    }
+
+    private func gameCenterChoice(
+        title: String,
+        systemImage: String,
+        destination: GameCenterDestination,
+        identifier: String
+    ) -> some View {
+        Button {
+            requestedGameCenterDestination = destination
+            showsGameCenterMenu = false
+        } label: {
+            HStack(spacing: 14) {
+                Image(systemName: systemImage)
+                    .font(.title3.weight(.bold))
+                    .frame(width: 30)
+                Text(title)
+                    .font(.headline.weight(.bold))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .font(.subheadline.weight(.bold))
+            }
+            .foregroundColor(.black)
+            .padding(.horizontal, 18)
+            .frame(minHeight: 62)
+            .background(Color.white, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .opacity(achievementTracker.isGameCenterAuthenticated ? 1 : 0.65)
+        }
+        .buttonStyle(.plain)
+        .disabled(!achievementTracker.isGameCenterAuthenticated)
+        .accessibilityLabel(title)
+        .accessibilityHint(
+            achievementTracker.isGameCenterAuthenticated
+                ? ""
+                : L10n.string("menu.game_center_sign_in_required")
+        )
+        .accessibilityIdentifier(identifier)
     }
 
     private var gameScreen: some View {
@@ -1994,19 +2112,26 @@ struct MenuChoiceButton: View {
     }
 }
 
-struct OniLeaderboardView: UIViewControllerRepresentable {
-    @Binding var isPresented: Bool
+struct GameCenterView: UIViewControllerRepresentable {
+    let destination: GameCenterDestination
+    let dismiss: () -> Void
 
     func makeCoordinator() -> Coordinator {
-        Coordinator(isPresented: $isPresented)
+        Coordinator(dismiss: dismiss)
     }
 
     func makeUIViewController(context: Context) -> GKGameCenterViewController {
-        let controller = GKGameCenterViewController(
-            leaderboardID: AchievementTracker.oniDiscsLeaderboardID,
-            playerScope: .global,
-            timeScope: .allTime
-        )
+        let controller: GKGameCenterViewController
+        switch destination {
+        case .oniLeaderboard:
+            controller = GKGameCenterViewController(
+                leaderboardID: AchievementTracker.oniDiscsLeaderboardID,
+                playerScope: .global,
+                timeScope: .allTime
+            )
+        case .achievements:
+            controller = GKGameCenterViewController(state: .achievements)
+        }
         controller.gameCenterDelegate = context.coordinator
         return controller
     }
@@ -2014,14 +2139,14 @@ struct OniLeaderboardView: UIViewControllerRepresentable {
     func updateUIViewController(_ controller: GKGameCenterViewController, context: Context) {}
 
     final class Coordinator: NSObject, GKGameCenterControllerDelegate {
-        @Binding var isPresented: Bool
+        let dismiss: () -> Void
 
-        init(isPresented: Binding<Bool>) {
-            _isPresented = isPresented
+        init(dismiss: @escaping () -> Void) {
+            self.dismiss = dismiss
         }
 
         func gameCenterViewControllerDidFinish(_ gameCenterViewController: GKGameCenterViewController) {
-            isPresented = false
+            dismiss()
         }
     }
 }

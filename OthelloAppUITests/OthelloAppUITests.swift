@@ -63,6 +63,26 @@ final class OthelloAppUITests: XCTestCase {
         XCTAssertEqual(twoPlayerButton.label, "2인 대전")
     }
 
+    func testTrophyOpensRankingAndAchievementsChoices() throws {
+        let app = XCUIApplication()
+        app.launch()
+
+        let trophyButton = app.buttons["showGameCenterMenuButton"]
+        XCTAssertTrue(trophyButton.waitForExistence(timeout: 5))
+        let buttonIsHittable = NSPredicate(format: "isHittable == true")
+        expectation(for: buttonIsHittable, evaluatedWith: trophyButton)
+        waitForExpectations(timeout: 3)
+        trophyButton.tap()
+
+        XCTAssertTrue(app.buttons["showOniLeaderboardButton"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons["showAchievementsButton"].exists)
+
+        let screenshot = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+        screenshot.name = "Game Center choices"
+        screenshot.lifetime = .keepAlways
+        add(screenshot)
+    }
+
     func testCaptureEnglishStoreScreenshots() throws {
         try captureStoreScreenshots(
             language: "en",

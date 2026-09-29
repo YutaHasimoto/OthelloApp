@@ -417,6 +417,30 @@
         "ko" : { "stringUnit" : { "state" : "translated", "value" : "%@ 승리다냥" } }
       }
     },
+    "menu.achievements" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Achievements" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Logros" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Succès" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Conquistas" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "成就" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "実績" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "업적" } }
+      }
+    },
+    "menu.close_game_center" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Close Game Center" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Cerrar Game Center" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Fermer Game Center" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Fechar o Game Center" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "关闭 Game Center" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "Game Centerを閉じる" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "Game Center 닫기" } }
+      }
+    },
     "menu.cpu_battle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -429,16 +453,28 @@
         "ko" : { "stringUnit" : { "state" : "translated", "value" : "CPU와 대전" } }
       }
     },
-    "menu.leaderboard_requires_game_center" : {
+    "menu.game_center" : {
       "extractionState" : "manual",
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Sign in to Game Center to view the leaderboard." } },
-        "es" : { "stringUnit" : { "state" : "translated", "value" : "Inicia sesión en Game Center para ver la clasificación." } },
-        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connectez-vous à Game Center pour voir le classement." } },
-        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Inicie sessão no Game Center para ver o ranking." } },
-        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "登录 Game Center 后即可查看排行榜。" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ランキングの表示にはGame Centerへのサインインが必要です" } },
-        "ko" : { "stringUnit" : { "state" : "translated", "value" : "순위표를 보려면 Game Center에 로그인하세요." } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Rankings & Achievements" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Clasificaciones y logros" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Classements et succès" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Rankings e conquistas" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "排行榜与成就" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ランキング・実績" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "순위표와 업적" } }
+      }
+    },
+    "menu.game_center_sign_in_required" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Sign in to Game Center to view rankings and achievements." } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Inicia sesión en Game Center para ver las clasificaciones y los logros." } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Connectez-vous à Game Center pour voir les classements et les succès." } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Inicie sessão no Game Center para ver os rankings e as conquistas." } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "登录 Game Center 后即可查看排行榜和成就。" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ランキングと実績を見るにはGame Centerにサインインしてください" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "순위표와 업적을 보려면 Game Center에 로그인하세요." } }
       }
     },
     "menu.oni_leaderboard" : {
