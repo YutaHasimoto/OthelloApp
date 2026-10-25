@@ -51,6 +51,29 @@ final class OthelloAppUITests: XCTestCase {
         try assertGameBoardDoesNotScroll(startButtonIdentifier: "startCPUButton-easy")
     }
 
+    func testCPUSecondPlayerSelectionStartsWithBlackCPUMove() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP"]
+        app.launch()
+
+        let secondPlayerButton = app.buttons["selectCPUSecondButton"]
+        XCTAssertTrue(secondPlayerButton.waitForExistence(timeout: 5))
+        secondPlayerButton.tap()
+        XCTAssertTrue(secondPlayerButton.isSelected)
+
+        app.buttons["startCPUButton-easy"].tap()
+        XCTAssertTrue(app.buttons["boardCell-0-0"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["白"].exists)
+
+        let openingCells = ["boardCell-2-3", "boardCell-3-2", "boardCell-4-5", "boardCell-5-4"]
+        let deadline = Date().addingTimeInterval(5)
+        while Date() < deadline && !openingCells.contains(where: { app.buttons[$0].label.contains("黒") }) {
+            Thread.sleep(forTimeInterval: 0.1)
+        }
+        XCTAssertTrue(openingCells.contains(where: { app.buttons[$0].label.contains("黒") }))
+        XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "置ける場所")).count > 0)
+    }
+
     private func assertGameBoardDoesNotScroll(startButtonIdentifier: String) throws {
         let app = XCUIApplication()
         app.launch()

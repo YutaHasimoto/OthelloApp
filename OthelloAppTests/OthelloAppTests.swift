@@ -28,6 +28,30 @@ final class OthelloAppTests: XCTestCase {
         XCTAssertEqual(progress.bestOniVictoryBlackDiscs, 50)
     }
 
+    func testSecondPlayerWinsCountForAchievementsButNotBlackDiscsLeaderboard() {
+        var progress = AchievementProgress()
+
+        progress.record(
+            mode: .humanVsCPU, difficulty: .oni, winner: .white,
+            humanDisc: .white, finalBlackDiscs: 20
+        )
+        XCTAssertEqual(progress.totalCPUWins, 1)
+        XCTAssertEqual(progress.currentCPUWinStreak, 1)
+        XCTAssertTrue(progress.achievedIdentifiers.contains("othello.cpu.oni"))
+        XCTAssertNil(progress.bestOniVictoryBlackDiscs)
+
+        progress.record(mode: .humanVsCPU, difficulty: .oni, winner: .black, humanDisc: .white)
+        XCTAssertEqual(progress.totalCPUWins, 1)
+        XCTAssertEqual(progress.currentCPUWinStreak, 0)
+
+        progress.record(
+            mode: .humanVsCPU, difficulty: .oni, winner: .black,
+            humanDisc: .black, finalBlackDiscs: 42
+        )
+        XCTAssertEqual(progress.totalCPUWins, 2)
+        XCTAssertEqual(progress.bestOniVictoryBlackDiscs, 42)
+    }
+
     func testAchievementProgressDecodesSavedDataFromBeforeOniLeaderboard() throws {
         let oldData = Data("""
         {"totalCPUWins":3,"currentCPUWinStreak":2,"bestCPUWinStreak":2,
@@ -163,11 +187,13 @@ final class OthelloAppTests: XCTestCase {
             XCTAssertEqual(L10n.string("disc.black", bundle: bundle), expectation.black)
             XCTAssertEqual(L10n.string("menu.two_player_battle", bundle: bundle), expectation.twoPlayers)
             XCTAssertNotEqual(L10n.string("menu.oni_leaderboard", bundle: bundle), "menu.oni_leaderboard")
+            XCTAssertNotEqual(L10n.string("menu.first_black", bundle: bundle), "menu.first_black")
+            XCTAssertNotEqual(L10n.string("menu.second_white", bundle: bundle), "menu.second_white")
+            XCTAssertNotEqual(L10n.string("menu.turn_order", bundle: bundle), "menu.turn_order")
             XCTAssertNotEqual(
-                L10n.string("menu.leaderboard_requires_game_center", bundle: bundle),
-                "menu.leaderboard_requires_game_center"
+                L10n.string("menu.game_center_sign_in_required", bundle: bundle),
+                "menu.game_center_sign_in_required"
             )
-
             let position = L10n.format(
                 "board.position",
                 arguments: [Int64(3), Int64(4)],
@@ -282,6 +308,29 @@ final class OthelloAppTests: XCTestCase {
     }
 
     @MainActor
+    func testWhiteHumanWinAgainstStrongCPUUnlockPredicate() {
+        var board = Array(repeating: Disc.white, count: OthelloGame.cellCount)
+        board[OthelloGame.index(row: 0, column: 0)] = .empty
+        board[OthelloGame.index(row: 0, column: 1)] = .black
+        var game = OthelloGame(board: board, currentPlayer: .white)
+
+        XCTAssertTrue(game.applyMove(at: BoardPosition(row: 0, column: 0)))
+        XCTAssertTrue(game.isFinished)
+        XCTAssertEqual(game.winner, .white)
+
+        let whiteHuman = OthelloGameViewModel(
+            game: game, playMode: .humanVsCPU, difficulty: .strong, humanDisc: .white
+        )
+        let blackHuman = OthelloGameViewModel(
+            game: game, playMode: .humanVsCPU, difficulty: .strong, humanDisc: .black
+        )
+
+        XCTAssertTrue(whiteHuman.didHumanWinAgainstCPU)
+        XCTAssertTrue(whiteHuman.didHumanWinAgainstStrongCPU)
+        XCTAssertFalse(blackHuman.didHumanWinAgainstCPU)
+    }
+
+    @MainActor
     func testValidMoveEmitsMoveFeedback() {
         let viewModel = OthelloGameViewModel()
 
@@ -338,5 +387,44 @@ final class OthelloAppTests: XCTestCase {
         XCTAssertEqual(viewModel.game.currentPlayer, .black)
         XCTAssertFalse(viewModel.isThinking)
         XCTAssertEqual(viewModel.game.count(for: .black) + viewModel.game.count(for: .white), 6)
+    }
+
+    @MainActor
+    func testSecondPlayerCPUOpeningAndRestartKeepWhiteHumanTurn() async throws {
+        let viewModel = OthelloGameViewModel()
+        viewModel.startGame(mode: .humanVsCPU, difficulty: .easy, humanDisc: .white)
+
+        XCTAssertEqual(viewModel.humanDisc, .white)
+        XCTAssertEqual(viewModel.cpuDisc, .black)
+        XCTAssertEqual(viewModel.game.currentPlayer, .black)
+        XCTAssertTrue(viewModel.isThinking)
+        XCTAssertTrue(viewModel.legalMoveSet.isEmpty)
+
+        viewModel.tap(position: BoardPosition(row: 2, column: 3))
+        XCTAssertEqual(viewModel.game.moveCount, 0)
+
+        try await Task.sleep(nanoseconds: 700_000_000)
+        XCTAssertEqual(viewModel.game.moveCount, 1)
+        XCTAssertEqual(viewModel.game.currentPlayer, .white)
+        XCTAssertFalse(viewModel.isThinking)
+        XCTAssertFalse(viewModel.legalMoveSet.isEmpty)
+
+        viewModel.resetGame()
+        XCTAssertEqual(viewModel.humanDisc, .white)
+        XCTAssertEqual(viewModel.game.currentPlayer, .black)
+        XCTAssertTrue(viewModel.isThinking)
+
+        try await Task.sleep(nanoseconds: 700_000_000)
+        let openingBoard = viewModel.game.board
+        XCTAssertEqual(viewModel.game.moveCount, 1)
+        XCTAssertEqual(viewModel.game.currentPlayer, .white)
+
+        let whiteMove = try XCTUnwrap(viewModel.legalMoveSet.first)
+        viewModel.tap(position: whiteMove)
+        try await Task.sleep(nanoseconds: 700_000_000)
+        XCTAssertTrue(viewModel.canUndo)
+        viewModel.undo()
+        XCTAssertEqual(viewModel.game.board, openingBoard)
+        XCTAssertEqual(viewModel.game.currentPlayer, .white)
     }
 }

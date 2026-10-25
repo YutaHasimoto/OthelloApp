@@ -18,7 +18,7 @@ import AudioToolbox
 import UIKit
 #endif
 
-enum Disc: Int, CaseIterable {
+enum Disc: Int, CaseIterable, Hashable {
     case empty
     case black
     case white
@@ -322,15 +322,22 @@ struct AchievementProgress: Codable, Equatable {
     // Optional so progress saved before this leaderboard existed still decodes.
     var bestOniVictoryBlackDiscs: Int? = nil
 
-    mutating func record(mode: PlayMode, difficulty: CPUDifficulty, winner: Disc?, finalBlackDiscs: Int? = nil) {
+    mutating func record(
+        mode: PlayMode,
+        difficulty: CPUDifficulty,
+        winner: Disc?,
+        humanDisc: Disc = .black,
+        finalBlackDiscs: Int? = nil
+    ) {
         switch mode {
         case .humanVsCPU:
-            if winner == .black {
+            if winner == humanDisc {
                 if totalCPUWins < Int.max { totalCPUWins += 1 }
                 if currentCPUWinStreak < Int.max { currentCPUWinStreak += 1 }
                 bestCPUWinStreak = max(bestCPUWinStreak, currentCPUWinStreak)
                 clearedDifficulties.insert(difficulty.rawValue)
-                if difficulty == .oni, let finalBlackDiscs, (1...64).contains(finalBlackDiscs) {
+                if difficulty == .oni, humanDisc == .black,
+                   let finalBlackDiscs, (1...64).contains(finalBlackDiscs) {
                     bestOniVictoryBlackDiscs = max(bestOniVictoryBlackDiscs ?? 0, finalBlackDiscs)
                 }
             } else {
@@ -428,10 +435,22 @@ final class AchievementTracker: ObservableObject {
         reportOniDiscsIfPossible()
     }
 
-    func recordFinishedGame(mode: PlayMode, difficulty: CPUDifficulty, winner: Disc?, finalBlackDiscs: Int) {
+    func recordFinishedGame(
+        mode: PlayMode,
+        difficulty: CPUDifficulty,
+        winner: Disc?,
+        humanDisc: Disc,
+        finalBlackDiscs: Int
+    ) {
         let playerID = authenticatedPlayerID ?? Self.guestPlayerID
         var progress = progressByPlayer[playerID] ?? AchievementProgress()
-        progress.record(mode: mode, difficulty: difficulty, winner: winner, finalBlackDiscs: finalBlackDiscs)
+        progress.record(
+            mode: mode,
+            difficulty: difficulty,
+            winner: winner,
+            humanDisc: humanDisc,
+            finalBlackDiscs: finalBlackDiscs
+        )
         progressByPlayer[playerID] = progress
         persist()
         reportAchievementsIfPossible()
@@ -1013,21 +1032,13 @@ struct OthelloAI {
 @MainActor
 final class OthelloGameViewModel: ObservableObject {
     @Published private(set) var game = OthelloGame()
-    @Published var playMode: PlayMode = .twoPlayers {
-        didSet {
-            resetGame()
-        }
-    }
-    @Published var difficulty: CPUDifficulty = .normal {
-        didSet {
-            continueTurnFlow()
-        }
-    }
+    @Published private(set) var playMode: PlayMode = .twoPlayers
+    @Published private(set) var difficulty: CPUDifficulty = .normal
+    @Published private(set) var humanDisc: Disc = .black
     @Published private(set) var isThinking = false
     @Published private(set) var feedbackSignal: GameFeedbackSignal?
 
-    private let humanDisc = Disc.black
-    private let cpuDisc = Disc.white
+    var cpuDisc: Disc { humanDisc.opponent }
     private var history: [OthelloGame] = []
     private var cpuTask: Task<Void, Never>?
     private var cpuWatchdogTask: Task<Void, Never>?
@@ -1038,16 +1049,22 @@ final class OthelloGameViewModel: ObservableObject {
     init(
         game: OthelloGame = OthelloGame(),
         playMode: PlayMode = .twoPlayers,
-        difficulty: CPUDifficulty = .normal
+        difficulty: CPUDifficulty = .normal,
+        humanDisc: Disc = .black
     ) {
+        precondition(humanDisc != .empty)
         _game = Published(initialValue: game)
         _playMode = Published(initialValue: playMode)
         _difficulty = Published(initialValue: difficulty)
+        _humanDisc = Published(initialValue: humanDisc)
         continueTurnFlow()
     }
 
     var legalMoveSet: Set<BoardPosition> {
-        Set(game.legalMoves())
+        if playMode == .humanVsCPU && game.currentPlayer != humanDisc {
+            return []
+        }
+        return Set(game.legalMoves())
     }
 
     var canUndo: Bool {
@@ -1135,6 +1152,15 @@ final class OthelloGameViewModel: ObservableObject {
             emitFeedback(.reset)
         }
         continueTurnFlow()
+    }
+
+    func startGame(mode: PlayMode, difficulty: CPUDifficulty, humanDisc: Disc = .black) {
+        precondition(humanDisc != .empty)
+        clearPendingCPUWork()
+        playMode = mode
+        self.difficulty = difficulty
+        self.humanDisc = humanDisc
+        resetGame()
     }
 
     private func continueTurnFlow() {
@@ -1277,6 +1303,7 @@ struct ContentView: View {
     @StateObject private var viewModel = OthelloGameViewModel()
     @StateObject private var feedbackController = GameFeedbackController()
     @State private var screen: Screen = .menu
+    @State private var selectedHumanDisc: Disc = .black
     @State private var isShowingInitialSplash = true
     @State private var showsResetAlert = false
     @State private var reviewRequestedMoveCount: Int?
@@ -1434,6 +1461,21 @@ struct ContentView: View {
                                         .shadow(color: .black.opacity(0.28), radius: 2, x: 0, y: 1)
                                         .frame(maxWidth: .infinity, alignment: .leading)
 
+                                    HStack(spacing: 8) {
+                                        cpuTurnOrderButton(
+                                            title: L10n.string("menu.first_black"),
+                                            disc: .black,
+                                            identifier: "selectCPUFirstButton"
+                                        )
+                                        cpuTurnOrderButton(
+                                            title: L10n.string("menu.second_white"),
+                                            disc: .white,
+                                            identifier: "selectCPUSecondButton"
+                                        )
+                                    }
+                                    .accessibilityElement(children: .contain)
+                                    .accessibilityLabel(L10n.string("menu.turn_order"))
+
                                     ForEach(CPUDifficulty.allCases) { difficulty in
                                         let isLocked = isDifficultyLocked(difficulty)
                                         MenuChoiceButton(
@@ -1462,6 +1504,33 @@ struct ContentView: View {
                 }
             }
         }
+    }
+
+    private func cpuTurnOrderButton(title: String, disc: Disc, identifier: String) -> some View {
+        let isSelected = selectedHumanDisc == disc
+        return Button {
+            selectedHumanDisc = disc
+            feedbackController.play(.menuSelect)
+        } label: {
+            HStack(spacing: 8) {
+                DiscView(disc: disc)
+                    .frame(width: 20, height: 20)
+                Text(title)
+                    .font(.subheadline.weight(.bold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+            }
+            .foregroundColor(isSelected ? OthelloTheme.primaryText : .white)
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .background(
+                isSelected ? Color.white : Color.black.opacity(0.55),
+                in: RoundedRectangle(cornerRadius: 8, style: .continuous)
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(title)
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .accessibilityIdentifier(identifier)
     }
 
     private var gameCenterMenu: some View {
@@ -1580,6 +1649,7 @@ struct ContentView: View {
                         game: viewModel.game,
                         playMode: viewModel.playMode,
                         difficulty: viewModel.difficulty,
+                        humanDisc: viewModel.humanDisc,
                         playAgainAction: {
                             isResultScreenDismissed = false
                             hasRecordedCurrentGame = false
@@ -1638,9 +1708,9 @@ struct ContentView: View {
     private var cpuTopControls: some View {
         PlayerControlStrip(
             title: L10n.format("player.cpu", viewModel.difficulty.title),
-            disc: .white,
-            count: viewModel.game.count(for: .white),
-            isActive: viewModel.game.currentPlayer == .white && !viewModel.game.isFinished,
+            disc: viewModel.cpuDisc,
+            count: viewModel.game.count(for: viewModel.cpuDisc),
+            isActive: viewModel.game.currentPlayer == viewModel.cpuDisc && !viewModel.game.isFinished,
             isThinking: viewModel.isThinking,
             canUndo: viewModel.canUndo,
             canReset: !viewModel.isThinking,
@@ -1655,10 +1725,10 @@ struct ContentView: View {
 
     private var cpuBottomControls: some View {
         PlayerControlStrip(
-            title: Disc.black.name,
-            disc: .black,
-            count: viewModel.game.count(for: .black),
-            isActive: viewModel.game.currentPlayer == .black && !viewModel.game.isFinished,
+            title: viewModel.humanDisc.name,
+            disc: viewModel.humanDisc,
+            count: viewModel.game.count(for: viewModel.humanDisc),
+            isActive: viewModel.game.currentPlayer == viewModel.humanDisc && !viewModel.game.isFinished,
             isThinking: false,
             canUndo: viewModel.canUndo,
             canReset: !viewModel.isThinking,
@@ -1701,8 +1771,7 @@ struct ContentView: View {
         resetVictoryCelebrationState()
         isResultScreenDismissed = false
         hasRecordedCurrentGame = false
-        viewModel.playMode = .twoPlayers
-        viewModel.resetGame()
+        viewModel.startGame(mode: .twoPlayers, difficulty: viewModel.difficulty)
         screen = .game
     }
 
@@ -1716,9 +1785,7 @@ struct ContentView: View {
         resetVictoryCelebrationState()
         isResultScreenDismissed = false
         hasRecordedCurrentGame = false
-        viewModel.difficulty = difficulty
-        viewModel.playMode = .humanVsCPU
-        viewModel.resetGame()
+        viewModel.startGame(mode: .humanVsCPU, difficulty: difficulty, humanDisc: selectedHumanDisc)
         screen = .game
     }
 
@@ -1782,6 +1849,7 @@ struct ContentView: View {
                 mode: viewModel.playMode,
                 difficulty: viewModel.difficulty,
                 winner: viewModel.game.winner,
+                humanDisc: viewModel.humanDisc,
                 finalBlackDiscs: viewModel.game.count(for: .black)
             )
         }
@@ -2251,6 +2319,7 @@ struct GameResultScreen: View {
     let game: OthelloGame
     let playMode: PlayMode
     let difficulty: CPUDifficulty
+    let humanDisc: Disc
     let playAgainAction: () -> Void
     let menuAction: () -> Void
     let dismissAction: () -> Void
@@ -2376,9 +2445,9 @@ struct GameResultScreen: View {
         }
 
         if playMode == .humanVsCPU {
-            if game.winner == .black {
+            if game.winner == humanDisc {
                 return L10n.format("result.human_victory", difficulty.title)
-            } else if game.winner == .white {
+            } else if game.winner == humanDisc.opponent {
                 return L10n.format("result.cpu_victory", difficulty.title)
             }
             return L10n.format("result.cpu_draw", difficulty.title)

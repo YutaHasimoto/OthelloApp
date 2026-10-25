@@ -453,6 +453,18 @@
         "ko" : { "stringUnit" : { "state" : "translated", "value" : "CPU와 대전" } }
       }
     },
+    "menu.first_black" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "First (Black)" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Primero (negras)" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Premier (noir)" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Primeiro (pretas)" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "先手（黑棋）" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "先攻（黒）" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "선공 (흑돌)" } }
+      }
+    },
     "menu.game_center" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -489,6 +501,18 @@
         "ko" : { "stringUnit" : { "state" : "translated", "value" : "오니 CPU 순위표" } }
       }
     },
+    "menu.second_white" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Second (White)" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Segundo (blancas)" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Deuxième (blanc)" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Segundo (brancas)" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "后手（白棋）" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "後攻（白）" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "후공 (백돌)" } }
+      }
+    },
     "menu.two_player_battle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -499,6 +523,18 @@
         "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "双人对战" } },
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "2人対戦" } },
         "ko" : { "stringUnit" : { "state" : "translated", "value" : "2인 대전" } }
+      }
+    },
+    "menu.turn_order" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Turn order" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Orden de turno" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Ordre des tours" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Ordem de jogo" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "先后手" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "先攻・後攻" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "선공 · 후공" } }
       }
     },
     "mode.cpu" : {
