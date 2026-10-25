@@ -2653,6 +2653,8 @@ struct GameResultScreen: View {
                     .padding(.vertical, 8)
                     .frame(maxWidth: .infinity)
                     .frame(minHeight: 44)
+                    .background(Color.white)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier("resultMenuButton")
