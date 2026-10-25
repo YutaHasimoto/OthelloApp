@@ -1299,6 +1299,7 @@ struct ContentView: View {
     }
 
     @AppStorage("isOniDifficultyUnlocked") private var isOniDifficultyUnlocked = false
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @StateObject private var achievementTracker = AchievementTracker.shared
     @StateObject private var viewModel = OthelloGameViewModel()
     @StateObject private var feedbackController = GameFeedbackController()
@@ -1461,18 +1462,7 @@ struct ContentView: View {
                                         .shadow(color: .black.opacity(0.28), radius: 2, x: 0, y: 1)
                                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                                    HStack(spacing: 8) {
-                                        cpuTurnOrderButton(
-                                            title: L10n.string("menu.first_black"),
-                                            disc: .black,
-                                            identifier: "selectCPUFirstButton"
-                                        )
-                                        cpuTurnOrderButton(
-                                            title: L10n.string("menu.second_white"),
-                                            disc: .white,
-                                            identifier: "selectCPUSecondButton"
-                                        )
-                                    }
+                                    cpuTurnOrderChoices(availableWidth: geometry.size.width)
                                     .accessibilityElement(children: .contain)
                                     .accessibilityLabel(L10n.string("menu.turn_order"))
 
@@ -1506,6 +1496,29 @@ struct ContentView: View {
         }
     }
 
+    @ViewBuilder
+    private func cpuTurnOrderChoices(availableWidth: CGFloat) -> some View {
+        if availableWidth < 500 || dynamicTypeSize.isAccessibilitySize {
+            VStack(spacing: 8) {
+                cpuTurnOrderChoice(disc: .black)
+                cpuTurnOrderChoice(disc: .white)
+            }
+        } else {
+            HStack(spacing: 8) {
+                cpuTurnOrderChoice(disc: .black)
+                cpuTurnOrderChoice(disc: .white)
+            }
+        }
+    }
+
+    private func cpuTurnOrderChoice(disc: Disc) -> some View {
+        cpuTurnOrderButton(
+            title: L10n.string(disc == .black ? "menu.first_black" : "menu.second_white"),
+            disc: disc,
+            identifier: disc == .black ? "selectCPUFirstButton" : "selectCPUSecondButton"
+        )
+    }
+
     private func cpuTurnOrderButton(title: String, disc: Disc, identifier: String) -> some View {
         let isSelected = selectedHumanDisc == disc
         return Button {
@@ -1517,10 +1530,11 @@ struct ContentView: View {
                     .frame(width: 20, height: 20)
                 Text(title)
                     .font(.subheadline.weight(.bold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.75)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .foregroundColor(isSelected ? OthelloTheme.primaryText : .white)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
             .frame(maxWidth: .infinity, minHeight: 44)
             .background(
                 isSelected ? Color.white : Color.black.opacity(0.55),
@@ -1538,47 +1552,49 @@ struct ContentView: View {
             Color(red: 0.07, green: 0.27, blue: 0.12)
                 .ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                HStack {
-                    Text(L10n.string("menu.game_center"))
-                        .font(.title2.weight(.bold))
-                        .foregroundColor(.white)
-                    Spacer()
-                    Button {
-                        showsGameCenterMenu = false
-                    } label: {
-                        Image(systemName: "xmark")
-                            .font(.headline.weight(.semibold))
+            ScrollView {
+                VStack(spacing: 20) {
+                    HStack {
+                        Text(L10n.string("menu.game_center"))
+                            .font(.title2.weight(.bold))
                             .foregroundColor(.white)
-                            .frame(width: 44, height: 44)
+                        Spacer()
+                        Button {
+                            showsGameCenterMenu = false
+                        } label: {
+                            Image(systemName: "xmark")
+                                .font(.headline.weight(.semibold))
+                                .foregroundColor(.white)
+                                .frame(width: 44, height: 44)
+                        }
+                        .accessibilityLabel(L10n.string("menu.close_game_center"))
+                        .accessibilityIdentifier("closeGameCenterMenuButton")
                     }
-                    .accessibilityLabel(L10n.string("menu.close_game_center"))
-                    .accessibilityIdentifier("closeGameCenterMenuButton")
-                }
 
-                if !achievementTracker.isGameCenterAuthenticated {
-                    Text(L10n.string("menu.game_center_sign_in_required"))
-                        .font(.subheadline)
-                        .foregroundColor(.white.opacity(0.9))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                }
+                    if !achievementTracker.isGameCenterAuthenticated {
+                        Text(L10n.string("menu.game_center_sign_in_required"))
+                            .font(.subheadline)
+                            .foregroundColor(.white.opacity(0.9))
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
 
-                gameCenterChoice(
-                    title: L10n.string("menu.oni_leaderboard"),
-                    systemImage: "list.number",
-                    destination: .oniLeaderboard,
-                    identifier: "showOniLeaderboardButton"
-                )
-                gameCenterChoice(
-                    title: L10n.string("menu.achievements"),
-                    systemImage: "star.fill",
-                    destination: .achievements,
-                    identifier: "showAchievementsButton"
-                )
-                Spacer(minLength: 0)
+                    gameCenterChoice(
+                        title: L10n.string("menu.oni_leaderboard"),
+                        systemImage: "list.number",
+                        destination: .oniLeaderboard,
+                        identifier: "showOniLeaderboardButton"
+                    )
+                    gameCenterChoice(
+                        title: L10n.string("menu.achievements"),
+                        systemImage: "star.fill",
+                        destination: .achievements,
+                        identifier: "showAchievementsButton"
+                    )
+                }
+                .padding(24)
+                .frame(maxWidth: 470)
+                .frame(maxWidth: .infinity, alignment: .top)
             }
-            .padding(24)
-            .frame(maxWidth: 470)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
     }
@@ -1599,8 +1615,8 @@ struct ContentView: View {
                     .frame(width: 30)
                 Text(title)
                     .font(.headline.weight(.bold))
-                    .lineLimit(2)
                     .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
                     .font(.subheadline.weight(.bold))
@@ -1625,19 +1641,36 @@ struct ContentView: View {
     private var gameScreen: some View {
         GeometryReader { geometry in
             ZStack {
-                VStack(spacing: gameVerticalSpacing(for: geometry)) {
-                    if viewModel.playMode == .twoPlayers {
-                        twoPlayerTopControls
+                Group {
+                    if usesSideLayout(for: geometry) {
+                        let panelWidth = sidePanelWidth(for: geometry)
+                        HStack(spacing: 8) {
+                            leadingSideControls(width: panelWidth)
 
-                        board(in: geometry)
+                            board(side: sideBoardSide(for: geometry))
 
-                        twoPlayerBottomControls
+                            trailingSideControls(width: panelWidth)
+                        }
                     } else {
-                        cpuTopControls
+                        ScrollView(.vertical) {
+                            VStack(spacing: gameVerticalSpacing(for: geometry)) {
+                                if viewModel.playMode == .twoPlayers {
+                                    twoPlayerTopControls
 
-                        board(in: geometry)
+                                    board(side: verticalBoardSide(for: geometry))
 
-                        cpuBottomControls
+                                    twoPlayerBottomControls
+                                } else {
+                                    cpuTopControls
+
+                                    board(side: verticalBoardSide(for: geometry))
+
+                                    cpuBottomControls
+                                }
+                            }
+                            .frame(maxWidth: .infinity)
+                            .frame(minHeight: max(0, geometry.size.height - gameVerticalPadding(for: geometry) * 2))
+                        }
                     }
                 }
                 .padding(.horizontal, gameHorizontalPadding(for: geometry))
@@ -1741,13 +1774,50 @@ struct ContentView: View {
         )
     }
 
-    private func board(in geometry: GeometryProxy) -> some View {
+    private func leadingSideControls(width: CGFloat) -> some View {
+        let isTwoPlayerGame = viewModel.playMode == .twoPlayers
+        let disc: Disc = isTwoPlayerGame ? .white : viewModel.cpuDisc
+        return sideControls(
+            title: isTwoPlayerGame ? disc.name : L10n.format("player.cpu", viewModel.difficulty.title),
+            disc: disc,
+            isThinking: !isTwoPlayerGame && viewModel.isThinking,
+            width: width
+        )
+    }
+
+    private func trailingSideControls(width: CGFloat) -> some View {
+        let disc: Disc = viewModel.playMode == .twoPlayers ? .black : viewModel.humanDisc
+        return sideControls(title: disc.name, disc: disc, isThinking: false, width: width)
+    }
+
+    private func sideControls(title: String, disc: Disc, isThinking: Bool, width: CGFloat) -> some View {
+        PlayerControlStrip(
+            title: title,
+            disc: disc,
+            count: viewModel.game.count(for: disc),
+            isActive: viewModel.game.currentPlayer == disc && !viewModel.game.isFinished,
+            isThinking: isThinking,
+            canUndo: viewModel.canUndo,
+            canReset: !viewModel.isThinking,
+            menuAction: showMenu,
+            undoAction: viewModel.undo,
+            resetAction: {
+                feedbackController.play(.menuSelect)
+                showsResetAlert = true
+            },
+            layout: .sidebar,
+            sidePanelWidth: width
+        )
+        .frame(width: width)
+    }
+
+    private func board(side: CGFloat) -> some View {
         OthelloBoardView(
             game: viewModel.game,
             legalMoves: viewModel.legalMoveSet,
             tapAction: viewModel.tap(position:)
         )
-        .frame(width: boardSide(for: geometry), height: boardSide(for: geometry))
+        .frame(width: side, height: side)
     }
 
     private func hideInitialSplashAfterDelay() async {
@@ -1821,13 +1891,32 @@ struct ContentView: View {
         difficulty.requiresUnlock && !isOniDifficultyUnlocked
     }
 
-    private func boardSide(for geometry: GeometryProxy) -> CGFloat {
-        let controlsHeight: CGFloat = 64 * 2
+    private func usesSideLayout(for geometry: GeometryProxy) -> Bool {
+        geometry.size.width >= 470
+            && geometry.size.width > geometry.size.height * 1.08
+            && sideBoardSide(for: geometry) >= verticalBoardSide(for: geometry) * 0.95
+    }
+
+    private func sidePanelWidth(for geometry: GeometryProxy) -> CGFloat {
+        min(208, max(96, geometry.size.width * 0.18))
+    }
+
+    private func sideBoardSide(for geometry: GeometryProxy) -> CGFloat {
+        let availableWidth = geometry.size.width
+            - gameHorizontalPadding(for: geometry) * 2
+            - sidePanelWidth(for: geometry) * 2
+            - 16
+        let availableHeight = geometry.size.height - gameVerticalPadding(for: geometry) * 2
+        return max(1, min(availableWidth, availableHeight))
+    }
+
+    private func verticalBoardSide(for geometry: GeometryProxy) -> CGFloat {
+        let controlsHeight: CGFloat = (dynamicTypeSize.isAccessibilitySize ? 100 : 64) * 2
         let verticalSpacing = gameVerticalSpacing(for: geometry) * 2
-        let availableWidth = geometry.size.width - gameHorizontalPadding(for: geometry) * 2
+        let availableWidth = max(1, geometry.size.width - gameHorizontalPadding(for: geometry) * 2)
         let availableHeight = geometry.size.height - gameVerticalPadding(for: geometry) * 2 - controlsHeight - verticalSpacing
 
-        return max(1, min(availableWidth, availableHeight))
+        return min(availableWidth, max(240, availableHeight))
     }
 
     private func gameVerticalSpacing(for geometry: GeometryProxy) -> CGFloat {
@@ -2161,8 +2250,7 @@ struct MenuChoiceButton: View {
 
                 Text(title)
                     .font(.headline.weight(.bold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.82)
+                    .fixedSize(horizontal: false, vertical: true)
 
                 Spacer(minLength: 0)
 
@@ -2171,7 +2259,8 @@ struct MenuChoiceButton: View {
             }
             .foregroundColor(isDisabled ? .black.opacity(0.42) : .black)
             .padding(.horizontal, 18)
-            .frame(height: 58)
+            .padding(.vertical, 10)
+            .frame(minHeight: 58)
             .background(Color.white.opacity(isDisabled ? 0.72 : 1))
             .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
@@ -2221,6 +2310,11 @@ struct GameCenterView: UIViewControllerRepresentable {
 }
 
 struct PlayerControlStrip: View {
+    enum Layout: Equatable {
+        case horizontal
+        case sidebar
+    }
+
     let title: String
     let disc: Disc
     let count: Int
@@ -2231,8 +2325,20 @@ struct PlayerControlStrip: View {
     let menuAction: () -> Void
     let undoAction: () -> Void
     let resetAction: () -> Void
+    var layout: Layout = .horizontal
+    var sidePanelWidth: CGFloat = 0
 
     var body: some View {
+        Group {
+            if layout == .sidebar {
+                sidebar
+            } else {
+                horizontalStrip
+            }
+        }
+    }
+
+    private var horizontalStrip: some View {
         HStack(spacing: 14) {
             HStack(spacing: 12) {
                 DiscView(disc: disc)
@@ -2291,6 +2397,73 @@ struct PlayerControlStrip: View {
         .padding(.vertical, 6)
         .frame(minHeight: 64)
     }
+
+    private var sidebar: some View {
+        ScrollView(.vertical) {
+            VStack(spacing: 8) {
+                DiscView(disc: disc)
+                    .frame(width: 36, height: 36)
+                    .opacity(isActive ? 1 : 0.82)
+
+                Text(title)
+                    .font(.subheadline.weight(.bold))
+                    .foregroundColor(isActive ? OthelloTheme.primaryText : OthelloTheme.secondaryText)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+
+                HStack(alignment: .firstTextBaseline, spacing: 3) {
+                    Text("\(count)")
+                        .font(.title2.monospacedDigit().weight(.heavy))
+                        .foregroundColor(OthelloTheme.primaryText)
+                    Text(L10n.string("disc.unit"))
+                        .font(.caption.weight(.semibold))
+                        .foregroundColor(OthelloTheme.secondaryText)
+                }
+
+                if isThinking {
+                    ProgressView()
+                        .scaleEffect(0.78)
+                        .frame(height: 24)
+                } else {
+                    Capsule()
+                        .fill(isActive ? OthelloTheme.accent : Color.clear)
+                        .frame(width: 36, height: 5)
+                }
+
+                if sidePanelWidth >= 140 {
+                    HStack(spacing: 0) {
+                        controlButtons
+                    }
+                } else {
+                    VStack(spacing: 0) {
+                        controlButtons
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 8)
+        }
+        .frame(width: sidePanelWidth)
+        .background(OthelloTheme.panelBackground, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+    }
+
+    @ViewBuilder
+    private var controlButtons: some View {
+        IconControlButton(title: L10n.string("control.menu"), systemImage: "house.fill", action: menuAction)
+        IconControlButton(
+            title: L10n.string("control.undo"),
+            systemImage: "arrow.uturn.backward",
+            isDisabled: !canUndo,
+            action: undoAction
+        )
+        IconControlButton(
+            title: L10n.string("control.reset"),
+            systemImage: "arrow.counterclockwise",
+            tint: OthelloTheme.warning,
+            isDisabled: !canReset,
+            action: resetAction
+        )
+    }
 }
 
 struct IconControlButton: View {
@@ -2316,6 +2489,8 @@ struct IconControlButton: View {
 }
 
 struct GameResultScreen: View {
+    @ScaledMetric(relativeTo: .largeTitle) private var titleFontSize: CGFloat = 32
+
     let game: OthelloGame
     let playMode: PlayMode
     let difficulty: CPUDifficulty
@@ -2325,105 +2500,162 @@ struct GameResultScreen: View {
     let dismissAction: () -> Void
 
     var body: some View {
-        ZStack {
-            Color.black.opacity(0.34)
-                .ignoresSafeArea()
+        GeometryReader { geometry in
+            let isWide = geometry.size.width >= 600 && geometry.size.width > geometry.size.height * 1.1
 
-            VStack(spacing: 18) {
-                HStack(alignment: .center, spacing: 12) {
-                    Text(L10n.string("result.label"))
-                        .font(.caption.weight(.heavy))
-                        .foregroundColor(OthelloTheme.accent)
+            ZStack {
+                Color.black.opacity(0.34)
+                    .ignoresSafeArea()
 
-                    Spacer(minLength: 0)
+                ScrollView {
+                    VStack {
+                        Spacer(minLength: 0)
 
-                    Button(action: dismissAction) {
-                        Image(systemName: "xmark")
-                            .font(.headline.weight(.black))
-                            .foregroundColor(.white)
-                            .frame(width: 46, height: 46)
-                            .background(OthelloTheme.warning)
-                            .clipShape(Circle())
-                            .shadow(color: OthelloTheme.warning.opacity(0.28), radius: 8, x: 0, y: 4)
+                        Group {
+                            if isWide {
+                                HStack(alignment: .top, spacing: 20) {
+                                    VStack(spacing: 12) {
+                                        resultLabel
+                                        resultSummary(isWide: true)
+                                        resultScore
+                                    }
+                                    .frame(maxWidth: .infinity)
+
+                                    VStack(spacing: 14) {
+                                        HStack {
+                                            Spacer(minLength: 0)
+                                            dismissButton
+                                        }
+                                        resultActions
+                                    }
+                                    .frame(maxWidth: 220)
+                                }
+                            } else {
+                                VStack(spacing: 18) {
+                                    HStack(spacing: 12) {
+                                        resultLabel
+                                        Spacer(minLength: 0)
+                                        dismissButton
+                                    }
+                                    resultSummary(isWide: false)
+                                    resultScore
+                                    resultActions
+                                }
+                            }
+                        }
+                        .padding(isWide ? 16 : 24)
+                        .frame(maxWidth: isWide ? 680 : 420)
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                        .shadow(color: .black.opacity(0.22), radius: 20, x: 0, y: 12)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 12)
+                        .accessibilityElement(children: .contain)
+                        .accessibilityIdentifier("resultScreen")
+
+                        Spacer(minLength: 0)
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(L10n.string("accessibility.dismiss_result"))
-                    .accessibilityHint(L10n.string("accessibility.show_board"))
-                    .accessibilityIdentifier("dismissResultButton")
-                }
-                .frame(maxWidth: .infinity)
-
-                VStack(spacing: 8) {
-                    Text(resultTitle)
-                        .font(.system(size: 32, weight: .heavy, design: .rounded))
-                        .foregroundColor(OthelloTheme.primaryText)
-                        .multilineTextAlignment(.center)
-                        .lineLimit(2)
-                        .minimumScaleFactor(0.72)
-
-                    Text(resultMessage)
-                        .font(.subheadline.weight(.semibold))
-                        .foregroundColor(OthelloTheme.secondaryText)
-                        .multilineTextAlignment(.center)
-                }
-
-                HStack(spacing: 14) {
-                    ScorePill(
-                        disc: .black,
-                        count: game.count(for: .black),
-                        isActive: game.winner == .black
-                    )
-
-                    Text("-")
-                        .font(.title2.weight(.heavy))
-                        .foregroundColor(OthelloTheme.secondaryText)
-
-                    ScorePill(
-                        disc: .white,
-                        count: game.count(for: .white),
-                        isActive: game.winner == .white
-                    )
-                }
-                .accessibilityElement(children: .combine)
-                .accessibilityLabel(
-                    L10n.format(
-                        "result.score",
-                        Int64(game.count(for: .black)),
-                        Int64(game.count(for: .white))
-                    )
-                )
-
-                VStack(spacing: 10) {
-                    Button(action: playAgainAction) {
-                        Label(L10n.string("result.play_again"), systemImage: "arrow.clockwise.circle.fill")
-                            .font(.headline.weight(.bold))
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 54)
-                            .background(OthelloTheme.accent)
-                            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("playAgainButton")
-
-                    Button(action: menuAction) {
-                        Label(L10n.string("result.menu"), systemImage: "house.fill")
-                            .font(.subheadline.weight(.bold))
-                            .foregroundColor(OthelloTheme.accent)
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 44)
-                    }
-                    .buttonStyle(.plain)
+                    .frame(maxWidth: .infinity, minHeight: geometry.size.height)
                 }
             }
-            .padding(24)
-            .frame(maxWidth: 420)
-            .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
-            .shadow(color: .black.opacity(0.22), radius: 20, x: 0, y: 12)
-            .padding(.horizontal, 24)
-            .accessibilityElement(children: .contain)
-            .accessibilityIdentifier("resultScreen")
+        }
+    }
+
+    private var resultLabel: some View {
+        Text(L10n.string("result.label"))
+            .font(.caption.weight(.heavy))
+            .foregroundColor(OthelloTheme.accent)
+    }
+
+    private var dismissButton: some View {
+        Button(action: dismissAction) {
+            Image(systemName: "xmark")
+                .font(.headline.weight(.black))
+                .foregroundColor(.white)
+                .frame(width: 46, height: 46)
+                .background(OthelloTheme.warning)
+                .clipShape(Circle())
+                .shadow(color: OthelloTheme.warning.opacity(0.28), radius: 8, x: 0, y: 4)
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(L10n.string("accessibility.dismiss_result"))
+        .accessibilityHint(L10n.string("accessibility.show_board"))
+        .accessibilityIdentifier("dismissResultButton")
+    }
+
+    private func resultSummary(isWide: Bool) -> some View {
+        VStack(spacing: 8) {
+            Text(resultTitle)
+                .font(.system(size: isWide ? titleFontSize * 0.82 : titleFontSize, weight: .heavy, design: .rounded))
+                .foregroundColor(OthelloTheme.primaryText)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(resultMessage)
+                .font(.subheadline.weight(.semibold))
+                .foregroundColor(OthelloTheme.secondaryText)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private var resultScore: some View {
+        HStack(spacing: 14) {
+            ScorePill(
+                disc: .black,
+                count: game.count(for: .black),
+                isActive: game.winner == .black
+            )
+
+            Text("-")
+                .font(.title2.weight(.heavy))
+                .foregroundColor(OthelloTheme.secondaryText)
+
+            ScorePill(
+                disc: .white,
+                count: game.count(for: .white),
+                isActive: game.winner == .white
+            )
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(
+            L10n.format(
+                "result.score",
+                Int64(game.count(for: .black)),
+                Int64(game.count(for: .white))
+            )
+        )
+    }
+
+    private var resultActions: some View {
+        VStack(spacing: 10) {
+            Button(action: playAgainAction) {
+                Label(L10n.string("result.play_again"), systemImage: "arrow.clockwise.circle.fill")
+                    .font(.headline.weight(.bold))
+                    .foregroundColor(.white)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.vertical, 8)
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: 54)
+                    .background(OthelloTheme.accent)
+                    .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("playAgainButton")
+
+            Button(action: menuAction) {
+                Label(L10n.string("result.menu"), systemImage: "house.fill")
+                    .font(.subheadline.weight(.bold))
+                    .foregroundColor(OthelloTheme.accent)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.vertical, 8)
+                    .frame(maxWidth: .infinity)
+                    .frame(minHeight: 44)
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("resultMenuButton")
         }
     }
 

@@ -74,6 +74,206 @@ final class OthelloAppUITests: XCTestCase {
         XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "置ける場所")).count > 0)
     }
 
+    func testCompactPortraitAndWideLandscapeKeepGameControlsVisible() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        XCUIDevice.shared.orientation = .portrait
+        defer { XCUIDevice.shared.orientation = .portrait }
+        app.launch()
+        assertWindowOrientation(.portrait, in: app)
+
+        let twoPlayerButton = app.buttons["startTwoPlayerButton"]
+        let firstTurnButton = app.buttons["selectCPUFirstButton"]
+        let secondTurnButton = app.buttons["selectCPUSecondButton"]
+        let easyCPUButton = app.buttons["startCPUButton-easy"]
+        XCTAssertTrue(waitUntilHittable(twoPlayerButton, timeout: 5), "The menu did not become interactive")
+        for button in [twoPlayerButton, firstTurnButton, secondTurnButton, easyCPUButton] {
+            XCTAssertTrue(button.waitForExistence(timeout: 5), "Missing menu button: \(button.identifier)")
+            if !button.isHittable { app.swipeUp() }
+            XCTAssertTrue(waitUntilHittable(button, timeout: 3), "Menu button is not reachable: \(button.identifier)")
+            assertFitsInWindow(button, in: app)
+        }
+        keepScreenshot(named: "adaptive-menu-portrait")
+
+        easyCPUButton.tap()
+        keepScreenshot(named: "adaptive-game-initial-portrait")
+        assertBoardAndControlsFit(in: app)
+
+        let openingMove = app.buttons["boardCell-2-3"]
+        XCTAssertTrue(openingMove.waitForExistence(timeout: 5))
+        let beforeMove = openingMove.label
+        XCTAssertTrue(beforeMove.contains("available move"), "The opening cell is not a legal move")
+        openingMove.tap()
+        let blackDiscAppears = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "label CONTAINS %@", "Black"),
+            object: openingMove
+        )
+        XCTAssertEqual(XCTWaiter.wait(for: [blackDiscAppears], timeout: 5), .completed)
+        let playedDisc = openingMove.label
+        XCTAssertNotEqual(playedDisc, beforeMove, "The move did not change the board cell")
+        waitForCPUControlsToEnable(in: app)
+        assertBoardAndControlsFit(in: app)
+        keepScreenshot(named: "adaptive-game-portrait")
+
+        XCUIDevice.shared.orientation = .landscapeLeft
+        XCTAssertTrue(app.buttons["boardCell-0-0"].waitForExistence(timeout: 5))
+        assertWindowOrientation(.landscape, in: app)
+        waitForCPUControlsToEnable(in: app)
+        assertBoardAndControlsFit(in: app)
+        XCTAssertEqual(openingMove.label, playedDisc, "Rotating the screen changed the played disc")
+        keepScreenshot(named: "adaptive-game-landscape")
+    }
+
+    func testResultActionsFitInPortraitAndLandscape() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        XCUIDevice.shared.orientation = .portrait
+        defer { XCUIDevice.shared.orientation = .portrait }
+        app.launch()
+        assertWindowOrientation(.portrait, in: app)
+
+        let twoPlayerButton = app.buttons["startTwoPlayerButton"]
+        XCTAssertTrue(twoPlayerButton.waitForExistence(timeout: 5))
+        XCTAssertTrue(waitUntilHittable(twoPlayerButton, timeout: 5))
+        twoPlayerButton.tap()
+
+        let result = app.otherElements["resultScreen"]
+        let legalMove = app.buttons.matching(
+            NSPredicate(format: "identifier BEGINSWITH %@ AND label CONTAINS %@", "boardCell-", "available move")
+        )
+        for move in 0..<60 {
+            if result.exists { break }
+            if legalMove.count == 0 {
+                XCTAssertTrue(result.waitForExistence(timeout: 3), "No legal move at turn \(move), but the result is absent")
+                break
+            }
+            legalMove.firstMatch.tap()
+        }
+        XCTAssertTrue(result.waitForExistence(timeout: 5), "The two-player game did not reach its result")
+
+        assertResultActionsFit(in: app)
+        keepScreenshot(named: "adaptive-result-portrait")
+
+        XCUIDevice.shared.orientation = .landscapeLeft
+        XCTAssertTrue(result.waitForExistence(timeout: 5))
+        assertWindowOrientation(.landscape, in: app)
+        assertResultActionsFit(in: app)
+        keepScreenshot(named: "adaptive-result-landscape")
+    }
+
+    private func assertBoardAndControlsFit(in app: XCUIApplication) {
+        let corners = ["boardCell-0-0", "boardCell-0-7", "boardCell-7-0", "boardCell-7-7"]
+        for identifier in corners {
+            let cell = app.buttons[identifier]
+            XCTAssertTrue(cell.waitForExistence(timeout: 5), "Missing board corner: \(identifier)")
+            XCTAssertTrue(waitUntilHittable(cell, timeout: 3), "Board corner cannot be tapped: \(identifier)")
+            assertFitsInWindow(cell, in: app)
+            XCTAssertGreaterThanOrEqual(cell.frame.width, 24, "Board cells are too narrow to tap")
+            XCTAssertGreaterThanOrEqual(cell.frame.height, 24, "Board cells are too short to tap")
+        }
+
+        for title in ["Menu", "Restart"] {
+            let buttons = app.buttons.matching(NSPredicate(format: "label == %@", title))
+            XCTAssertEqual(buttons.count, 2, "Expected a \(title) control for each player")
+            for index in 0..<buttons.count {
+                let button = buttons.element(boundBy: index)
+                XCTAssertTrue(
+                    waitUntilHittable(button, timeout: 3),
+                    "\(title) control \(index) cannot be tapped: \(controlDiagnostics(buttons, in: app))"
+                )
+                assertFitsInWindow(button, in: app)
+                XCTAssertGreaterThanOrEqual(button.frame.width, 44, "\(title) control is too narrow")
+                XCTAssertGreaterThanOrEqual(button.frame.height, 44, "\(title) control is too short")
+            }
+        }
+    }
+
+    private func controlDiagnostics(_ buttons: XCUIElementQuery, in app: XCUIApplication) -> String {
+        let controls = (0..<buttons.count).map { index in
+            let button = buttons.element(boundBy: index)
+            return "[\(index)] frame=\(button.frame), enabled=\(button.isEnabled), hittable=\(button.isHittable)"
+        }
+        return "\(controls.joined(separator: "; ")); window=\(app.windows.firstMatch.frame)"
+    }
+
+    private func waitForCPUControlsToEnable(in app: XCUIApplication) {
+        let legalMoves = app.buttons.matching(
+            NSPredicate(format: "identifier BEGINSWITH %@ AND label CONTAINS %@", "boardCell-", "available move")
+        )
+        let deadline = Date().addingTimeInterval(8)
+        while Date() < deadline && legalMoves.count == 0 {
+            Thread.sleep(forTimeInterval: 0.1)
+        }
+        XCTAssertGreaterThan(legalMoves.count, 0, "The CPU has not returned control to the player")
+
+        let restartButtons = app.buttons.matching(NSPredicate(format: "label == %@", "Restart"))
+        XCTAssertEqual(restartButtons.count, 2)
+        for index in 0..<restartButtons.count {
+            let button = restartButtons.element(boundBy: index)
+            let enabled = XCTNSPredicateExpectation(
+                predicate: NSPredicate(format: "isEnabled == true"),
+                object: button
+            )
+            XCTAssertEqual(
+                XCTWaiter.wait(for: [enabled], timeout: 8),
+                .completed,
+                "CPU turn did not finish before checking Restart control \(index)"
+            )
+        }
+    }
+
+    private func assertResultActionsFit(in app: XCUIApplication) {
+        let result = app.otherElements["resultScreen"]
+        XCTAssertTrue(result.exists)
+
+        for identifier in ["dismissResultButton", "playAgainButton", "resultMenuButton"] {
+            let button = app.buttons[identifier]
+            XCTAssertTrue(button.exists, "Missing result action: \(identifier)")
+            if !button.isHittable {
+                result.swipeUp()
+            }
+            XCTAssertTrue(waitUntilHittable(button, timeout: 3), "Result action cannot be tapped: \(identifier)")
+            assertFitsInWindow(button, in: app)
+            XCTAssertGreaterThanOrEqual(button.frame.height, 44, "Result action is too short: \(identifier)")
+        }
+    }
+
+    private enum WindowOrientation: Equatable {
+        case portrait
+        case landscape
+    }
+
+    private func assertWindowOrientation(_ expected: WindowOrientation, in app: XCUIApplication) {
+        let window = app.windows.firstMatch
+        XCTAssertTrue(window.waitForExistence(timeout: 5))
+        let deadline = Date().addingTimeInterval(5)
+        while Date() < deadline {
+            let frame = window.frame
+            let matches = expected == .portrait ? frame.height > frame.width : frame.width > frame.height
+            if matches { return }
+            Thread.sleep(forTimeInterval: 0.1)
+        }
+        XCTFail("The app window did not rotate to \(expected): \(window.frame)")
+    }
+
+    private func assertFitsInWindow(_ element: XCUIElement, in app: XCUIApplication) {
+        let window = app.windows.firstMatch
+        XCTAssertTrue(window.exists)
+        let visibleFrame = window.frame.insetBy(dx: -1, dy: -1)
+        XCTAssertTrue(
+            visibleFrame.contains(element.frame),
+            "\(element.identifier) extends beyond the window: \(element.frame) vs \(window.frame)"
+        )
+    }
+
+    private func waitUntilHittable(_ element: XCUIElement, timeout: TimeInterval) -> Bool {
+        let expectation = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "isHittable == true"),
+            object: element
+        )
+        return XCTWaiter.wait(for: [expectation], timeout: timeout) == .completed
+    }
+
     private func assertGameBoardDoesNotScroll(startButtonIdentifier: String) throws {
         let app = XCUIApplication()
         app.launch()
