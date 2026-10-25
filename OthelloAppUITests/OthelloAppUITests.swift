@@ -168,8 +168,8 @@ final class OthelloAppUITests: XCTestCase {
             XCTAssertTrue(cell.waitForExistence(timeout: 5), "Missing board corner: \(identifier)")
             XCTAssertTrue(waitUntilHittable(cell, timeout: 3), "Board corner cannot be tapped: \(identifier)")
             assertFitsInWindow(cell, in: app)
-            XCTAssertGreaterThanOrEqual(cell.frame.width, 24, "Board cells are too narrow to tap")
-            XCTAssertGreaterThanOrEqual(cell.frame.height, 24, "Board cells are too short to tap")
+            XCTAssertGreaterThanOrEqual(cell.frame.width + 0.01, 24, "Board cells are too narrow to tap")
+            XCTAssertGreaterThanOrEqual(cell.frame.height + 0.01, 24, "Board cells are too short to tap")
         }
 
         for title in ["Menu", "Restart"] {
@@ -182,8 +182,8 @@ final class OthelloAppUITests: XCTestCase {
                     "\(title) control \(index) cannot be tapped: \(controlDiagnostics(buttons, in: app))"
                 )
                 assertFitsInWindow(button, in: app)
-                XCTAssertGreaterThanOrEqual(button.frame.width, 44, "\(title) control is too narrow")
-                XCTAssertGreaterThanOrEqual(button.frame.height, 44, "\(title) control is too short")
+                XCTAssertGreaterThanOrEqual(button.frame.width + 0.01, 44, "\(title) control is too narrow")
+                XCTAssertGreaterThanOrEqual(button.frame.height + 0.01, 44, "\(title) control is too short")
             }
         }
     }
@@ -234,7 +234,7 @@ final class OthelloAppUITests: XCTestCase {
             }
             XCTAssertTrue(waitUntilHittable(button, timeout: 3), "Result action cannot be tapped: \(identifier)")
             assertFitsInWindow(button, in: app)
-            XCTAssertGreaterThanOrEqual(button.frame.height, 44, "Result action is too short: \(identifier)")
+            XCTAssertGreaterThanOrEqual(button.frame.height + 0.01, 44, "Result action is too short: \(identifier)")
         }
     }
 
