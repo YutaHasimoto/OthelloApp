@@ -1438,6 +1438,7 @@ struct ContentView: View {
     private var menuScreen: some View {
         GeometryReader { geometry in
             let isWideMenu = geometry.size.width > geometry.size.height
+            let hasPortraitCameraInset = !isWideMenu && geometry.safeAreaInsets.trailing > 60
 
             ZStack {
                 OthelloBoardBackdrop()
@@ -1463,7 +1464,7 @@ struct ContentView: View {
                     .padding(.leading, 24)
                     .padding(.trailing, isWideMenu ? max(24, geometry.size.width * 0.098 - 24) : 24)
                     .frame(height: 60)
-                    .offset(y: isWideMenu ? max(0, geometry.size.height * 0.094 - 30) : 0)
+                    .offset(y: isWideMenu ? max(0, geometry.size.height * 0.094 - 30) : (hasPortraitCameraInset ? 18 : 0))
 
                     ScrollView {
                         VStack(spacing: 26) {
