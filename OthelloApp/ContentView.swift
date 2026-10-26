@@ -1366,6 +1366,7 @@ struct ContentView: View {
         .animation(.easeOut(duration: 0.35), value: isShowingInitialSplash)
         .animation(.easeOut(duration: 0.22), value: isShowingVictoryCelebration)
         .animation(.easeOut(duration: 0.2), value: pendingCPUDifficulty)
+        .statusBarHidden(screen == .game)
         .alert(L10n.string("alert.reset.title"), isPresented: $showsResetAlert) {
             Button(L10n.string("alert.reset.cancel"), role: .cancel) {}
             Button(L10n.string("alert.reset.confirm"), role: .destructive) {
@@ -1742,6 +1743,7 @@ struct ContentView: View {
             .animation(.spring(response: 0.32, dampingFraction: 0.86), value: isResultScreenDismissed)
             .background(OthelloTheme.appBackground.ignoresSafeArea())
         }
+        .ignoresSafeArea(.container, edges: .horizontal)
     }
 
     private var twoPlayerTopControls: some View {
