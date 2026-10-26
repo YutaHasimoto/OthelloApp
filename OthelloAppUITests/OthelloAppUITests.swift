@@ -109,6 +109,29 @@ final class OthelloAppUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["CPU Normal"].exists)
     }
 
+    func testLockedOniExplainsHowToUnlock() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP", "-isOniDifficultyUnlocked", "NO"]
+        app.launch()
+
+        let oniButton = app.buttons["startCPUButton-oni"]
+        XCTAssertTrue(oniButton.waitForExistence(timeout: 5))
+        XCTAssertTrue(waitForMenuReady(oniButton, in: app))
+        XCTAssertTrue(oniButton.label.contains("ロック中"))
+        oniButton.tap()
+
+        let unlockAlert = app.alerts["鬼"]
+        XCTAssertTrue(unlockAlert.waitForExistence(timeout: 5))
+        XCTAssertTrue(unlockAlert.staticTexts["つよいをクリア後に開放"].exists)
+        XCTAssertFalse(app.buttons["selectCPUFirstButton"].exists)
+        XCTAssertFalse(app.buttons["boardCell-0-0"].exists)
+        keepScreenshot(named: "locked-oni-unlock-hint-ja")
+
+        unlockAlert.buttons["OK"].tap()
+        XCTAssertFalse(unlockAlert.exists)
+        XCTAssertTrue(oniButton.isHittable)
+    }
+
     func testCompactPortraitAndWideLandscapeKeepGameControlsVisible() throws {
         let app = XCUIApplication()
         app.launchArguments += ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]

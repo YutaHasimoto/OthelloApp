@@ -1307,6 +1307,7 @@ struct ContentView: View {
     @State private var pendingCPUDifficulty: CPUDifficulty?
     @State private var isShowingInitialSplash = true
     @State private var showsResetAlert = false
+    @State private var showsOniUnlockHint = false
     @State private var reviewRequestedMoveCount: Int?
     @State private var isShowingVictoryCelebration = false
     @State private var victoryCelebrationID = 0
@@ -1326,6 +1327,11 @@ struct ContentView: View {
                 case .menu:
                     menuScreen
                         .transition(.opacity.combined(with: .scale(scale: 0.98)))
+                        .alert(L10n.string("difficulty.oni"), isPresented: $showsOniUnlockHint) {
+                            Button(L10n.string("menu.oni_unlock_hint_ok"), role: .cancel) {}
+                        } message: {
+                            Text(L10n.string("menu.oni_unlock_hint"))
+                        }
                 case .game:
                     gameScreen
                         .transition(.opacity)
@@ -1476,12 +1482,13 @@ struct ContentView: View {
                                             title: difficulty.title,
                                             icon: cpuIcon(for: difficulty),
                                             trailingSystemImage: isLocked ? "lock.fill" : "chevron.right",
-                                            isDisabled: isLocked,
+                                            isLocked: isLocked,
                                             action: {
                                                 showCPUTurnOrder(for: difficulty)
                                             }
                                         )
                                         .accessibilityIdentifier("startCPUButton-\(difficulty.rawValue)")
+                                        .accessibilityHint(isLocked ? L10n.string("menu.oni_unlock_hint") : "")
                                     }
                                 }
                                 .padding(.top, 8)
@@ -1884,6 +1891,7 @@ struct ContentView: View {
     private func showCPUTurnOrder(for difficulty: CPUDifficulty) {
         guard !isDifficultyLocked(difficulty) else {
             feedbackController.play(.invalidMove)
+            showsOniUnlockHint = true
             return
         }
 
@@ -2290,7 +2298,7 @@ struct MenuChoiceButton: View {
     let title: String
     let icon: MenuChoiceIcon
     var trailingSystemImage = "chevron.right"
-    var isDisabled = false
+    var isLocked = false
     let action: () -> Void
 
     var body: some View {
@@ -2308,17 +2316,16 @@ struct MenuChoiceButton: View {
                 Image(systemName: trailingSystemImage)
                     .font(.subheadline.weight(.bold))
             }
-            .foregroundColor(isDisabled ? .black.opacity(0.42) : .black)
+            .foregroundColor(isLocked ? .black.opacity(0.42) : .black)
             .padding(.horizontal, 18)
             .padding(.vertical, 10)
             .frame(minHeight: 58)
-            .background(Color.white.opacity(isDisabled ? 0.72 : 1))
+            .background(Color.white.opacity(isLocked ? 0.72 : 1))
             .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .disabled(isDisabled)
-        .accessibilityLabel(isDisabled ? L10n.format("accessibility.locked", title) : title)
+        .accessibilityLabel(isLocked ? L10n.format("accessibility.locked", title) : title)
     }
 
     @ViewBuilder

@@ -513,6 +513,30 @@
         "ko" : { "stringUnit" : { "state" : "translated", "value" : "오니 CPU 순위표" } }
       }
     },
+    "menu.oni_unlock_hint" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Unlocks after beating Strong" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "Se desbloquea al vencer en Difícil" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "Se débloque après une victoire en Difficile" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "Desbloqueia após vencer no Difícil" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "通关困难难度后解锁" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "つよいをクリア後に開放" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "어려움을 클리어하면 해제" } }
+      }
+    },
+    "menu.oni_unlock_hint_ok" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "OK" } },
+        "es" : { "stringUnit" : { "state" : "translated", "value" : "OK" } },
+        "fr" : { "stringUnit" : { "state" : "translated", "value" : "OK" } },
+        "pt-BR" : { "stringUnit" : { "state" : "translated", "value" : "OK" } },
+        "zh-Hans" : { "stringUnit" : { "state" : "translated", "value" : "确定" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "OK" } },
+        "ko" : { "stringUnit" : { "state" : "translated", "value" : "확인" } }
+      }
+    },
     "menu.second_white" : {
       "extractionState" : "manual",
       "localizations" : {
