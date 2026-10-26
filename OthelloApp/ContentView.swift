@@ -2335,16 +2335,30 @@ struct MenuChoiceButton: View {
             Image(systemName: "person.2.fill")
                 .font(.title3.weight(.bold))
         case .stars(let count):
-            HStack(spacing: 1) {
-                ForEach(0..<count, id: \.self) { _ in
-                    Image(systemName: "star.fill")
-                        .font(.system(size: count == 1 ? 22 : count == 2 ? 14 : 10, weight: .bold))
+            if count == 3 {
+                VStack(spacing: -1) {
+                    difficultyStar
+                    HStack(spacing: 1) {
+                        difficultyStar
+                        difficultyStar
+                    }
+                }
+            } else {
+                HStack(spacing: 1) {
+                    ForEach(0..<count, id: \.self) { _ in
+                        difficultyStar
+                    }
                 }
             }
         case .warning:
             Image(systemName: "exclamationmark.triangle.fill")
                 .font(.title3.weight(.bold))
         }
+    }
+
+    private var difficultyStar: some View {
+        Image(systemName: "star.fill")
+            .font(.system(size: 14, weight: .bold))
     }
 }
 
