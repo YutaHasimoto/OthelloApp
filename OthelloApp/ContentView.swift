@@ -1923,13 +1923,13 @@ struct ContentView: View {
     private func cpuIcon(for difficulty: CPUDifficulty) -> MenuChoiceIcon {
         switch difficulty {
         case .easy:
-            return .easy
+            return .stars(1)
         case .normal:
-            return .normal
+            return .stars(2)
         case .strong:
-            return .strong
+            return .stars(3)
         case .oni:
-            return .oni
+            return .warning
         }
     }
 
@@ -2282,10 +2282,8 @@ struct VictoryCelebrationView: View {
 
 enum MenuChoiceIcon {
     case twoPlayers
-    case easy
-    case normal
-    case strong
-    case oni
+    case stars(Int)
+    case warning
 }
 
 struct MenuChoiceButton: View {
@@ -2329,64 +2327,16 @@ struct MenuChoiceButton: View {
         case .twoPlayers:
             Image(systemName: "person.2.fill")
                 .font(.title3.weight(.bold))
-        case .easy:
-            // Keep an icon on older systems if the tortoise symbol is unavailable.
-            Image(systemName: UIImage(systemName: "tortoise.fill") == nil ? "circle.fill" : "tortoise.fill")
-                .font(.title3.weight(.bold))
-        case .normal:
-            Image(systemName: "person.fill")
-                .font(.title3.weight(.bold))
-        case .strong:
-            Image(systemName: "bolt.fill")
-                .font(.title3.weight(.bold))
-        case .oni:
-            OniDifficultyIcon(isDisabled: isDisabled)
-        }
-    }
-}
-
-private struct OniDifficultyIcon: View {
-    let isDisabled: Bool
-
-    private var ink: Color { isDisabled ? .black.opacity(0.42) : .black }
-
-    var body: some View {
-        ZStack {
-            HStack(spacing: 6) {
-                OniHorn().fill(ink).frame(width: 7, height: 12)
-                    .rotationEffect(.degrees(-9))
-                OniHorn().fill(ink).frame(width: 7, height: 12)
-                    .rotationEffect(.degrees(9))
+        case .stars(let count):
+            HStack(spacing: 1) {
+                ForEach(0..<count, id: \.self) { _ in
+                    Image(systemName: "star.fill")
+                        .font(.system(size: count == 1 ? 22 : count == 2 ? 14 : 10, weight: .bold))
+                }
             }
-            .offset(y: -8)
-
-            Ellipse()
-                .fill(ink)
-                .frame(width: 27, height: 23)
-                .offset(y: 3)
-
-            HStack(spacing: 4) {
-                Capsule().fill(Color.white).frame(width: 6, height: 2.5)
-                    .rotationEffect(.degrees(24))
-                Capsule().fill(Color.white).frame(width: 6, height: 2.5)
-                    .rotationEffect(.degrees(-24))
-            }
-            .offset(y: 0)
-
-            Capsule().fill(Color.white).frame(width: 6, height: 2)
-                .offset(y: 9)
-        }
-        .frame(width: 30, height: 30)
-    }
-}
-
-private struct OniHorn: Shape {
-    func path(in rect: CGRect) -> Path {
-        Path { path in
-            path.move(to: CGPoint(x: rect.midX, y: rect.minY))
-            path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
-            path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
-            path.closeSubpath()
+        case .warning:
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.title3.weight(.bold))
         }
     }
 }
