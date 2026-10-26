@@ -1366,7 +1366,7 @@ struct ContentView: View {
         .animation(.easeOut(duration: 0.35), value: isShowingInitialSplash)
         .animation(.easeOut(duration: 0.22), value: isShowingVictoryCelebration)
         .animation(.easeOut(duration: 0.2), value: pendingCPUDifficulty)
-        .statusBarHidden(screen == .game)
+        .statusBarHidden()
         .alert(L10n.string("alert.reset.title"), isPresented: $showsResetAlert) {
             Button(L10n.string("alert.reset.cancel"), role: .cancel) {}
             Button(L10n.string("alert.reset.confirm"), role: .destructive) {
@@ -1385,14 +1385,17 @@ struct ContentView: View {
                 gameCenterMenu
                     .presentationDetents([.medium, .large])
                     .presentationDragIndicator(.visible)
+                    .statusBarHidden()
             } else {
                 gameCenterMenu
+                    .statusBarHidden()
             }
         }
         .fullScreenCover(item: $activeGameCenterDestination) { destination in
             GameCenterView(destination: destination) {
                 activeGameCenterDestination = nil
             }
+            .statusBarHidden()
         }
         .onChange(of: viewModel.game.isFinished) { isFinished in
             if isFinished {
@@ -1506,6 +1509,7 @@ struct ContentView: View {
                 }
             }
         }
+        .ignoresSafeArea(.container, edges: .horizontal)
     }
 
     private func cpuTurnOrderDialog(for difficulty: CPUDifficulty) -> some View {
@@ -1560,6 +1564,7 @@ struct ContentView: View {
                 }
             }
         }
+        .ignoresSafeArea(.container, edges: .horizontal)
     }
 
     private func cpuTurnOrderButton(disc: Disc, difficulty: CPUDifficulty) -> some View {
