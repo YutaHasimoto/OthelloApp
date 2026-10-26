@@ -1437,6 +1437,8 @@ struct ContentView: View {
 
     private var menuScreen: some View {
         GeometryReader { geometry in
+            let isWideMenu = geometry.size.width > geometry.size.height
+
             ZStack {
                 OthelloBoardBackdrop()
                     .ignoresSafeArea(.container, edges: .horizontal)
@@ -1458,8 +1460,10 @@ struct ContentView: View {
                         .accessibilityLabel(L10n.string("menu.game_center"))
                         .accessibilityIdentifier("showGameCenterMenuButton")
                     }
-                    .padding(.horizontal, 24)
+                    .padding(.leading, 24)
+                    .padding(.trailing, isWideMenu ? max(24, geometry.size.width * 0.098 - 24) : 24)
                     .frame(height: 60)
+                    .offset(y: isWideMenu ? max(0, geometry.size.height * 0.094 - 30) : 0)
 
                     ScrollView {
                         VStack(spacing: 26) {
