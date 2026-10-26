@@ -1304,7 +1304,7 @@ struct ContentView: View {
     @StateObject private var viewModel = OthelloGameViewModel()
     @StateObject private var feedbackController = GameFeedbackController()
     @State private var screen: Screen = .menu
-    @State private var selectedHumanDisc: Disc = .black
+    @State private var pendingCPUDifficulty: CPUDifficulty?
     @State private var isShowingInitialSplash = true
     @State private var showsResetAlert = false
     @State private var reviewRequestedMoveCount: Int?
@@ -1331,7 +1331,8 @@ struct ContentView: View {
                         .transition(.opacity)
                 }
             }
-            .disabled(isShowingInitialSplash)
+            .disabled(isShowingInitialSplash || pendingCPUDifficulty != nil)
+            .accessibilityHidden(pendingCPUDifficulty != nil)
 
             if isShowingInitialSplash {
                 SplashLogoView()
@@ -1348,10 +1349,17 @@ struct ContentView: View {
                 .transition(.opacity.combined(with: .scale(scale: 1.02)))
                 .zIndex(1)
             }
+
+            if let difficulty = pendingCPUDifficulty {
+                cpuTurnOrderDialog(for: difficulty)
+                    .transition(.opacity.combined(with: .scale(scale: 0.98)))
+                    .zIndex(3)
+            }
         }
         .animation(.spring(response: 0.34, dampingFraction: 0.88), value: screen)
         .animation(.easeOut(duration: 0.35), value: isShowingInitialSplash)
         .animation(.easeOut(duration: 0.22), value: isShowingVictoryCelebration)
+        .animation(.easeOut(duration: 0.2), value: pendingCPUDifficulty)
         .alert(L10n.string("alert.reset.title"), isPresented: $showsResetAlert) {
             Button(L10n.string("alert.reset.cancel"), role: .cancel) {}
             Button(L10n.string("alert.reset.confirm"), role: .destructive) {
@@ -1462,10 +1470,6 @@ struct ContentView: View {
                                         .shadow(color: .black.opacity(0.28), radius: 2, x: 0, y: 1)
                                         .frame(maxWidth: .infinity, alignment: .leading)
 
-                                    cpuTurnOrderChoices(availableWidth: geometry.size.width)
-                                    .accessibilityElement(children: .contain)
-                                    .accessibilityLabel(L10n.string("menu.turn_order"))
-
                                     ForEach(CPUDifficulty.allCases) { difficulty in
                                         let isLocked = isDifficultyLocked(difficulty)
                                         MenuChoiceButton(
@@ -1474,7 +1478,7 @@ struct ContentView: View {
                                             trailingSystemImage: isLocked ? "lock.fill" : "chevron.right",
                                             isDisabled: isLocked,
                                             action: {
-                                                startCPUGame(difficulty: difficulty)
+                                                showCPUTurnOrder(for: difficulty)
                                             }
                                         )
                                         .accessibilityIdentifier("startCPUButton-\(difficulty.rawValue)")
@@ -1496,55 +1500,87 @@ struct ContentView: View {
         }
     }
 
-    @ViewBuilder
-    private func cpuTurnOrderChoices(availableWidth: CGFloat) -> some View {
-        if availableWidth < 500 || dynamicTypeSize.isAccessibilitySize {
-            VStack(spacing: 8) {
-                cpuTurnOrderChoice(disc: .black)
-                cpuTurnOrderChoice(disc: .white)
-            }
-        } else {
-            HStack(spacing: 8) {
-                cpuTurnOrderChoice(disc: .black)
-                cpuTurnOrderChoice(disc: .white)
+    private func cpuTurnOrderDialog(for difficulty: CPUDifficulty) -> some View {
+        GeometryReader { geometry in
+            ZStack {
+                Color.black.opacity(0.55)
+                    .ignoresSafeArea()
+                    .onTapGesture { pendingCPUDifficulty = nil }
+
+                ScrollView {
+                    VStack {
+                        Spacer(minLength: 0)
+
+                        VStack(spacing: 16) {
+                            Text(L10n.string("menu.turn_order"))
+                                .font(.title2.weight(.heavy))
+                                .foregroundColor(OthelloTheme.primaryText)
+
+                            Text(difficulty.title)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundColor(OthelloTheme.secondaryText)
+
+                            VStack(spacing: 10) {
+                                cpuTurnOrderButton(disc: .black, difficulty: difficulty)
+                                cpuTurnOrderButton(disc: .white, difficulty: difficulty)
+                            }
+
+                            Button {
+                                pendingCPUDifficulty = nil
+                            } label: {
+                                Text(L10n.string("menu.cancel_turn_order"))
+                                    .font(.subheadline.weight(.bold))
+                                    .foregroundColor(OthelloTheme.accent)
+                                    .frame(maxWidth: .infinity, minHeight: 44)
+                                    .background(Color.white)
+                                    .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityIdentifier("cancelCPUTurnOrderButton")
+                        }
+                        .padding(24)
+                        .frame(maxWidth: 420)
+                        .background(Color.white, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 16)
+                        .accessibilityElement(children: .contain)
+                        .accessibilityIdentifier("cpuTurnOrderDialog")
+
+                        Spacer(minLength: 0)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+                }
             }
         }
     }
 
-    private func cpuTurnOrderChoice(disc: Disc) -> some View {
-        cpuTurnOrderButton(
-            title: L10n.string(disc == .black ? "menu.first_black" : "menu.second_white"),
-            disc: disc,
-            identifier: disc == .black ? "selectCPUFirstButton" : "selectCPUSecondButton"
-        )
-    }
-
-    private func cpuTurnOrderButton(title: String, disc: Disc, identifier: String) -> some View {
-        let isSelected = selectedHumanDisc == disc
+    private func cpuTurnOrderButton(disc: Disc, difficulty: CPUDifficulty) -> some View {
+        let title = L10n.string(disc == .black ? "menu.first_black" : "menu.second_white")
         return Button {
-            selectedHumanDisc = disc
-            feedbackController.play(.menuSelect)
+            pendingCPUDifficulty = nil
+            startCPUGame(difficulty: difficulty, humanDisc: disc)
         } label: {
-            HStack(spacing: 8) {
+            HStack(spacing: 12) {
                 DiscView(disc: disc)
-                    .frame(width: 20, height: 20)
+                    .frame(width: 28, height: 28)
                 Text(title)
-                    .font(.subheadline.weight(.bold))
+                    .font(.headline.weight(.bold))
                     .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right")
+                    .font(.subheadline.weight(.bold))
             }
-            .foregroundColor(isSelected ? OthelloTheme.primaryText : .white)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .frame(maxWidth: .infinity, minHeight: 44)
-            .background(
-                isSelected ? Color.white : Color.black.opacity(0.55),
-                in: RoundedRectangle(cornerRadius: 8, style: .continuous)
-            )
+            .foregroundColor(OthelloTheme.primaryText)
+            .padding(.horizontal, 16)
+            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity, minHeight: 56)
+            .background(Color(red: 0.94, green: 0.97, blue: 0.94), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous).stroke(OthelloTheme.accent.opacity(0.14)))
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(title)
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
-        .accessibilityIdentifier(identifier)
+        .accessibilityIdentifier(disc == .black ? "selectCPUFirstButton" : "selectCPUSecondButton")
     }
 
     private var gameCenterMenu: some View {
@@ -1845,7 +1881,17 @@ struct ContentView: View {
         screen = .game
     }
 
-    private func startCPUGame(difficulty: CPUDifficulty) {
+    private func showCPUTurnOrder(for difficulty: CPUDifficulty) {
+        guard !isDifficultyLocked(difficulty) else {
+            feedbackController.play(.invalidMove)
+            return
+        }
+
+        feedbackController.play(.menuSelect)
+        pendingCPUDifficulty = difficulty
+    }
+
+    private func startCPUGame(difficulty: CPUDifficulty, humanDisc: Disc) {
         guard !isDifficultyLocked(difficulty) else {
             feedbackController.play(.invalidMove)
             return
@@ -1855,7 +1901,7 @@ struct ContentView: View {
         resetVictoryCelebrationState()
         isResultScreenDismissed = false
         hasRecordedCurrentGame = false
-        viewModel.startGame(mode: .humanVsCPU, difficulty: difficulty, humanDisc: selectedHumanDisc)
+        viewModel.startGame(mode: .humanVsCPU, difficulty: difficulty, humanDisc: humanDisc)
         screen = .game
     }
 
@@ -2263,6 +2309,7 @@ struct MenuChoiceButton: View {
             .frame(minHeight: 58)
             .background(Color.white.opacity(isDisabled ? 0.72 : 1))
             .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .disabled(isDisabled)

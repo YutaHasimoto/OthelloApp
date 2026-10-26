@@ -190,6 +190,7 @@ final class OthelloAppTests: XCTestCase {
             XCTAssertNotEqual(L10n.string("menu.first_black", bundle: bundle), "menu.first_black")
             XCTAssertNotEqual(L10n.string("menu.second_white", bundle: bundle), "menu.second_white")
             XCTAssertNotEqual(L10n.string("menu.turn_order", bundle: bundle), "menu.turn_order")
+            XCTAssertNotEqual(L10n.string("menu.cancel_turn_order", bundle: bundle), "menu.cancel_turn_order")
             XCTAssertNotEqual(
                 L10n.string("menu.game_center_sign_in_required", bundle: bundle),
                 "menu.game_center_sign_in_required"

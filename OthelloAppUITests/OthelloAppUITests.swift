@@ -56,12 +56,14 @@ final class OthelloAppUITests: XCTestCase {
         app.launchArguments += ["-AppleLanguages", "(ja)", "-AppleLocale", "ja_JP"]
         app.launch()
 
+        XCTAssertFalse(app.buttons["selectCPUSecondButton"].exists)
+        let easyButton = app.buttons["startCPUButton-easy"]
+        XCTAssertTrue(waitForMenuReady(easyButton, in: app))
+        easyButton.tap()
         let secondPlayerButton = app.buttons["selectCPUSecondButton"]
         XCTAssertTrue(secondPlayerButton.waitForExistence(timeout: 5))
+        keepScreenshot(named: "cpu-turn-order-ja")
         secondPlayerButton.tap()
-        XCTAssertTrue(secondPlayerButton.isSelected)
-
-        app.buttons["startCPUButton-easy"].tap()
         XCTAssertTrue(app.buttons["boardCell-0-0"].waitForExistence(timeout: 3))
         XCTAssertTrue(app.staticTexts["白"].exists)
 
@@ -74,6 +76,39 @@ final class OthelloAppUITests: XCTestCase {
         XCTAssertTrue(app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "置ける場所")).count > 0)
     }
 
+    func testCPUTurnOrderAppearsAfterDifficultyAndCancelKeepsMenu() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+
+        let easyButton = app.buttons["startCPUButton-easy"]
+        XCTAssertTrue(easyButton.waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["selectCPUFirstButton"].exists)
+        XCTAssertFalse(app.buttons["selectCPUSecondButton"].exists)
+
+        XCTAssertTrue(waitForMenuReady(easyButton, in: app))
+        easyButton.tap()
+        let firstTurnButton = app.buttons["selectCPUFirstButton"]
+        XCTAssertTrue(firstTurnButton.waitForExistence(timeout: 5))
+        keepScreenshot(named: "cpu-turn-order-en")
+        XCTAssertTrue(app.buttons["selectCPUSecondButton"].exists)
+        XCTAssertTrue(app.staticTexts["Easy"].exists)
+        XCTAssertFalse(app.buttons["boardCell-0-0"].exists, "A difficulty tap must not start the game")
+        let cancelButton = app.buttons["cancelCPUTurnOrderButton"]
+        XCTAssertTrue(cancelButton.isHittable)
+        XCTAssertGreaterThanOrEqual(cancelButton.frame.height + 0.01, 44)
+        cancelButton.tap()
+        XCTAssertFalse(firstTurnButton.exists)
+        XCTAssertTrue(easyButton.isHittable)
+
+        app.buttons["startCPUButton-normal"].tap()
+        XCTAssertTrue(firstTurnButton.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Normal"].exists)
+        firstTurnButton.tap()
+        XCTAssertTrue(app.buttons["boardCell-0-0"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["CPU Normal"].exists)
+    }
+
     func testCompactPortraitAndWideLandscapeKeepGameControlsVisible() throws {
         let app = XCUIApplication()
         app.launchArguments += ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
@@ -83,11 +118,9 @@ final class OthelloAppUITests: XCTestCase {
         assertWindowOrientation(.portrait, in: app)
 
         let twoPlayerButton = app.buttons["startTwoPlayerButton"]
-        let firstTurnButton = app.buttons["selectCPUFirstButton"]
-        let secondTurnButton = app.buttons["selectCPUSecondButton"]
         let easyCPUButton = app.buttons["startCPUButton-easy"]
-        XCTAssertTrue(waitUntilHittable(twoPlayerButton, timeout: 5), "The menu did not become interactive")
-        for button in [twoPlayerButton, firstTurnButton, secondTurnButton, easyCPUButton] {
+        XCTAssertTrue(waitForMenuReady(twoPlayerButton, in: app), "The menu did not become interactive")
+        for button in [twoPlayerButton, easyCPUButton] {
             XCTAssertTrue(button.waitForExistence(timeout: 5), "Missing menu button: \(button.identifier)")
             if !button.isHittable { app.swipeUp() }
             XCTAssertTrue(waitUntilHittable(button, timeout: 3), "Menu button is not reachable: \(button.identifier)")
@@ -96,6 +129,16 @@ final class OthelloAppUITests: XCTestCase {
         keepScreenshot(named: "adaptive-menu-portrait")
 
         easyCPUButton.tap()
+        let firstTurnButton = app.buttons["selectCPUFirstButton"]
+        let secondTurnButton = app.buttons["selectCPUSecondButton"]
+        XCTAssertTrue(firstTurnButton.waitForExistence(timeout: 5))
+        for button in [firstTurnButton, secondTurnButton] {
+            XCTAssertTrue(waitUntilHittable(button, timeout: 3), "Turn order choice is not reachable")
+            assertFitsInWindow(button, in: app)
+            XCTAssertGreaterThanOrEqual(button.frame.height + 0.01, 44)
+        }
+        keepScreenshot(named: "adaptive-turn-order-portrait")
+        firstTurnButton.tap()
         keepScreenshot(named: "adaptive-game-initial-portrait")
         assertBoardAndControlsFit(in: app)
 
@@ -274,16 +317,35 @@ final class OthelloAppUITests: XCTestCase {
         return XCTWaiter.wait(for: [expectation], timeout: timeout) == .completed
     }
 
+    private func waitForMenuReady(_ button: XCUIElement, in app: XCUIApplication) -> Bool {
+        let splash = app.descendants(matching: .any)["studioLogo"]
+        let splashGone = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "exists == false"),
+            object: splash
+        )
+        guard XCTWaiter.wait(for: [splashGone], timeout: 7) == .completed else { return false }
+
+        let ready = XCTNSPredicateExpectation(
+            predicate: NSPredicate(format: "isEnabled == true AND isHittable == true"),
+            object: button
+        )
+        return XCTWaiter.wait(for: [ready], timeout: 5) == .completed
+    }
+
     private func assertGameBoardDoesNotScroll(startButtonIdentifier: String) throws {
         let app = XCUIApplication()
         app.launch()
 
         let startButton = app.buttons[startButtonIdentifier]
         XCTAssertTrue(startButton.waitForExistence(timeout: 5))
-        let buttonIsHittable = NSPredicate(format: "isHittable == true")
-        expectation(for: buttonIsHittable, evaluatedWith: startButton)
-        waitForExpectations(timeout: 5)
+        XCTAssertTrue(waitForMenuReady(startButton, in: app))
         startButton.tap()
+
+        if startButtonIdentifier.hasPrefix("startCPUButton-") {
+            let firstTurnButton = app.buttons["selectCPUFirstButton"]
+            XCTAssertTrue(firstTurnButton.waitForExistence(timeout: 3))
+            firstTurnButton.tap()
+        }
 
         assertBoardCellsStayInPlace(in: app)
         keepScreenshot(named: "fixed-board-\(startButtonIdentifier)-portrait")
@@ -401,7 +463,11 @@ final class OthelloAppUITests: XCTestCase {
 
         let easyCPUButton = app.buttons["startCPUButton-easy"]
         XCTAssertTrue(easyCPUButton.waitForExistence(timeout: 2))
+        XCTAssertTrue(waitForMenuReady(easyCPUButton, in: app))
         easyCPUButton.tap()
+        let firstTurnButton = app.buttons["selectCPUFirstButton"]
+        XCTAssertTrue(firstTurnButton.waitForExistence(timeout: 3))
+        firstTurnButton.tap()
 
         let openingMove = app.buttons["boardCell-2-3"]
         XCTAssertTrue(openingMove.waitForExistence(timeout: 3))
