@@ -1458,7 +1458,7 @@ struct ContentView: View {
                             VStack(spacing: 12) {
                                 MenuChoiceButton(
                                     title: L10n.string("menu.two_player_battle"),
-                                    systemImage: "person.2.fill",
+                                    icon: .twoPlayers,
                                     action: startTwoPlayerGame
                                 )
                                 .accessibilityIdentifier("startTwoPlayerButton")
@@ -1474,7 +1474,7 @@ struct ContentView: View {
                                         let isLocked = isDifficultyLocked(difficulty)
                                         MenuChoiceButton(
                                             title: difficulty.title,
-                                            systemImage: cpuIcon(for: difficulty),
+                                            icon: cpuIcon(for: difficulty),
                                             trailingSystemImage: isLocked ? "lock.fill" : "chevron.right",
                                             isDisabled: isLocked,
                                             action: {
@@ -1920,16 +1920,16 @@ struct ContentView: View {
         }
     }
 
-    private func cpuIcon(for difficulty: CPUDifficulty) -> String {
+    private func cpuIcon(for difficulty: CPUDifficulty) -> MenuChoiceIcon {
         switch difficulty {
         case .easy:
-            return "1.circle.fill"
+            return .easy
         case .normal:
-            return "circle.grid.3x3.fill"
+            return .normal
         case .strong:
-            return "bolt.fill"
+            return .strong
         case .oni:
-            return "flame.fill"
+            return .oni
         }
     }
 
@@ -2280,9 +2280,17 @@ struct VictoryCelebrationView: View {
     }
 }
 
+enum MenuChoiceIcon {
+    case twoPlayers
+    case easy
+    case normal
+    case strong
+    case oni
+}
+
 struct MenuChoiceButton: View {
     let title: String
-    let systemImage: String
+    let icon: MenuChoiceIcon
     var trailingSystemImage = "chevron.right"
     var isDisabled = false
     let action: () -> Void
@@ -2290,9 +2298,8 @@ struct MenuChoiceButton: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 12) {
-                Image(systemName: systemImage)
-                    .font(.title3.weight(.bold))
-                    .frame(width: 30)
+                leadingIcon
+                    .frame(width: 30, height: 30)
 
                 Text(title)
                     .font(.headline.weight(.bold))
@@ -2314,6 +2321,73 @@ struct MenuChoiceButton: View {
         .buttonStyle(.plain)
         .disabled(isDisabled)
         .accessibilityLabel(isDisabled ? L10n.format("accessibility.locked", title) : title)
+    }
+
+    @ViewBuilder
+    private var leadingIcon: some View {
+        switch icon {
+        case .twoPlayers:
+            Image(systemName: "person.2.fill")
+                .font(.title3.weight(.bold))
+        case .easy:
+            // Keep an icon on older systems if the tortoise symbol is unavailable.
+            Image(systemName: UIImage(systemName: "tortoise.fill") == nil ? "circle.fill" : "tortoise.fill")
+                .font(.title3.weight(.bold))
+        case .normal:
+            Image(systemName: "person.fill")
+                .font(.title3.weight(.bold))
+        case .strong:
+            Image(systemName: "bolt.fill")
+                .font(.title3.weight(.bold))
+        case .oni:
+            OniDifficultyIcon(isDisabled: isDisabled)
+        }
+    }
+}
+
+private struct OniDifficultyIcon: View {
+    let isDisabled: Bool
+
+    private var ink: Color { isDisabled ? .black.opacity(0.42) : .black }
+
+    var body: some View {
+        ZStack {
+            HStack(spacing: 6) {
+                OniHorn().fill(ink).frame(width: 7, height: 12)
+                    .rotationEffect(.degrees(-9))
+                OniHorn().fill(ink).frame(width: 7, height: 12)
+                    .rotationEffect(.degrees(9))
+            }
+            .offset(y: -8)
+
+            Ellipse()
+                .fill(ink)
+                .frame(width: 27, height: 23)
+                .offset(y: 3)
+
+            HStack(spacing: 4) {
+                Capsule().fill(Color.white).frame(width: 6, height: 2.5)
+                    .rotationEffect(.degrees(24))
+                Capsule().fill(Color.white).frame(width: 6, height: 2.5)
+                    .rotationEffect(.degrees(-24))
+            }
+            .offset(y: 0)
+
+            Capsule().fill(Color.white).frame(width: 6, height: 2)
+                .offset(y: 9)
+        }
+        .frame(width: 30, height: 30)
+    }
+}
+
+private struct OniHorn: Shape {
+    func path(in rect: CGRect) -> Path {
+        Path { path in
+            path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+            path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+            path.closeSubpath()
+        }
     }
 }
 
