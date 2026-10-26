@@ -1327,18 +1327,13 @@ struct ContentView: View {
                 case .menu:
                     menuScreen
                         .transition(.opacity.combined(with: .scale(scale: 0.98)))
-                        .alert(L10n.string("difficulty.oni"), isPresented: $showsOniUnlockHint) {
-                            Button(L10n.string("menu.oni_unlock_hint_ok"), role: .cancel) {}
-                        } message: {
-                            Text(L10n.string("menu.oni_unlock_hint"))
-                        }
                 case .game:
                     gameScreen
                         .transition(.opacity)
                 }
             }
-            .disabled(isShowingInitialSplash || pendingCPUDifficulty != nil)
-            .accessibilityHidden(pendingCPUDifficulty != nil)
+            .disabled(isShowingInitialSplash || pendingCPUDifficulty != nil || showsResetAlert || showsOniUnlockHint)
+            .accessibilityHidden(pendingCPUDifficulty != nil || showsResetAlert || showsOniUnlockHint)
 
             if isShowingInitialSplash {
                 SplashLogoView()
@@ -1361,22 +1356,26 @@ struct ContentView: View {
                     .transition(.opacity.combined(with: .scale(scale: 0.98)))
                     .zIndex(3)
             }
+
+            if showsResetAlert {
+                resetConfirmationDialog
+                    .transition(.opacity.combined(with: .scale(scale: 0.98)))
+                    .zIndex(4)
+            }
+
+            if showsOniUnlockHint {
+                oniUnlockHintDialog
+                    .transition(.opacity.combined(with: .scale(scale: 0.98)))
+                    .zIndex(4)
+            }
         }
         .animation(.spring(response: 0.34, dampingFraction: 0.88), value: screen)
         .animation(.easeOut(duration: 0.35), value: isShowingInitialSplash)
         .animation(.easeOut(duration: 0.22), value: isShowingVictoryCelebration)
         .animation(.easeOut(duration: 0.2), value: pendingCPUDifficulty)
+        .animation(.easeOut(duration: 0.2), value: showsResetAlert)
+        .animation(.easeOut(duration: 0.2), value: showsOniUnlockHint)
         .statusBarHidden()
-        .alert(L10n.string("alert.reset.title"), isPresented: $showsResetAlert) {
-            Button(L10n.string("alert.reset.cancel"), role: .cancel) {}
-            Button(L10n.string("alert.reset.confirm"), role: .destructive) {
-                resetVictoryCelebrationState()
-                hasRecordedCurrentGame = false
-                viewModel.resetGame(playFeedback: true)
-            }
-        } message: {
-            Text(L10n.string("alert.reset.message"))
-        }
         .sheet(isPresented: $showsGameCenterMenu, onDismiss: {
             activeGameCenterDestination = requestedGameCenterDestination
             requestedGameCenterDestination = nil
@@ -1440,6 +1439,7 @@ struct ContentView: View {
         GeometryReader { geometry in
             ZStack {
                 OthelloBoardBackdrop()
+                    .ignoresSafeArea(.container, edges: .horizontal)
 
                 VStack(spacing: 0) {
                     HStack {
@@ -1506,10 +1506,10 @@ struct ContentView: View {
                         .frame(maxWidth: .infinity)
                         .frame(minHeight: max(0, geometry.size.height - 60))
                     }
+                    .ignoresSafeArea(.container, edges: .horizontal)
                 }
             }
         }
-        .ignoresSafeArea(.container, edges: .horizontal)
     }
 
     private func cpuTurnOrderDialog(for difficulty: CPUDifficulty) -> some View {
@@ -1557,6 +1557,109 @@ struct ContentView: View {
                         .padding(.vertical, 16)
                         .accessibilityElement(children: .contain)
                         .accessibilityIdentifier("cpuTurnOrderDialog")
+
+                        Spacer(minLength: 0)
+                    }
+                    .frame(maxWidth: .infinity, minHeight: geometry.size.height)
+                }
+            }
+        }
+        .ignoresSafeArea(.container, edges: .horizontal)
+    }
+
+    private var resetConfirmationDialog: some View {
+        modalDialog(
+            title: L10n.string("alert.reset.title"),
+            message: L10n.string("alert.reset.message"),
+            identifier: "resetConfirmationDialog"
+        ) {
+            HStack(spacing: 12) {
+                Button {
+                    showsResetAlert = false
+                } label: {
+                    Text(L10n.string("alert.reset.cancel"))
+                        .frame(maxWidth: .infinity, minHeight: 52)
+                        .contentShape(Rectangle())
+                }
+                .accessibilityIdentifier("cancelResetButton")
+                .foregroundColor(OthelloTheme.accent)
+
+                Button {
+                    showsResetAlert = false
+                    resetVictoryCelebrationState()
+                    hasRecordedCurrentGame = false
+                    viewModel.resetGame(playFeedback: true)
+                } label: {
+                    Text(L10n.string("alert.reset.confirm"))
+                        .frame(maxWidth: .infinity, minHeight: 52)
+                        .contentShape(Rectangle())
+                }
+                .accessibilityIdentifier("confirmResetButton")
+                .foregroundColor(OthelloTheme.warning)
+            }
+            .buttonStyle(.plain)
+            .font(.headline.weight(.bold))
+            .frame(maxWidth: .infinity)
+        }
+    }
+
+    private var oniUnlockHintDialog: some View {
+        modalDialog(
+            title: L10n.string("difficulty.oni"),
+            message: L10n.string("menu.oni_unlock_hint"),
+            identifier: "oniUnlockHintDialog"
+        ) {
+            Button {
+                showsOniUnlockHint = false
+            } label: {
+                Text(L10n.string("menu.oni_unlock_hint_ok"))
+                    .frame(maxWidth: .infinity, minHeight: 52)
+                    .contentShape(Rectangle())
+            }
+            .font(.headline.weight(.bold))
+            .foregroundColor(OthelloTheme.accent)
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("dismissOniUnlockHintButton")
+        }
+    }
+
+    private func modalDialog<Actions: View>(
+        title: String,
+        message: String,
+        identifier: String,
+        @ViewBuilder actions: @escaping () -> Actions
+    ) -> some View {
+        GeometryReader { geometry in
+            ZStack {
+                Color.black.opacity(0.55)
+                    .ignoresSafeArea()
+
+                ScrollView {
+                    VStack {
+                        Spacer(minLength: 0)
+
+                        VStack(spacing: 18) {
+                            Text(title)
+                                .font(.title2.weight(.heavy))
+                                .foregroundColor(OthelloTheme.primaryText)
+                                .multilineTextAlignment(.center)
+
+                            Text(message)
+                                .font(.subheadline)
+                                .foregroundColor(OthelloTheme.secondaryText)
+                                .multilineTextAlignment(.center)
+                                .fixedSize(horizontal: false, vertical: true)
+
+                            actions()
+                                .frame(maxWidth: .infinity, minHeight: 52)
+                        }
+                        .padding(24)
+                        .frame(maxWidth: 420)
+                        .background(Color.white, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 16)
+                        .accessibilityElement(children: .contain)
+                        .accessibilityIdentifier(identifier)
 
                         Spacer(minLength: 0)
                     }
@@ -1688,67 +1791,73 @@ struct ContentView: View {
     }
 
     private var gameScreen: some View {
-        GeometryReader { geometry in
-            ZStack {
-                Group {
-                    if usesSideLayout(for: geometry) {
-                        let panelWidth = sidePanelWidth(for: geometry)
-                        HStack(spacing: 8) {
-                            leadingSideControls(width: panelWidth)
+        GeometryReader { safeGeometry in
+            GeometryReader { geometry in
+                ZStack {
+                    Group {
+                        if usesSideLayout(for: geometry) {
+                            let panelWidth = sidePanelWidth(for: geometry)
+                            HStack(spacing: 8) {
+                                leadingSideControls(width: panelWidth)
 
-                            board(side: sideBoardSide(for: geometry))
+                                board(side: sideBoardSide(for: geometry))
 
-                            trailingSideControls(width: panelWidth)
-                        }
-                    } else {
-                        ScrollView(.vertical) {
-                            VStack(spacing: gameVerticalSpacing(for: geometry)) {
-                                if viewModel.playMode == .twoPlayers {
-                                    twoPlayerTopControls
-
-                                    board(side: verticalBoardSide(for: geometry))
-
-                                    twoPlayerBottomControls
-                                } else {
-                                    cpuTopControls
-
-                                    board(side: verticalBoardSide(for: geometry))
-
-                                    cpuBottomControls
-                                }
+                                trailingSideControls(width: panelWidth)
                             }
-                            .frame(maxWidth: .infinity)
-                            .frame(minHeight: max(0, geometry.size.height - gameVerticalPadding(for: geometry) * 2))
+                        } else {
+                            ScrollView(.vertical) {
+                                VStack(spacing: gameVerticalSpacing(for: geometry)) {
+                                    if viewModel.playMode == .twoPlayers {
+                                        twoPlayerTopControls
+                                            .padding(.leading, safeGeometry.safeAreaInsets.leading)
+                                            .padding(.trailing, safeGeometry.safeAreaInsets.trailing)
+
+                                        board(side: verticalBoardSide(for: geometry))
+
+                                        twoPlayerBottomControls
+                                    } else {
+                                        cpuTopControls
+                                            .padding(.leading, safeGeometry.safeAreaInsets.leading)
+                                            .padding(.trailing, safeGeometry.safeAreaInsets.trailing)
+
+                                        board(side: verticalBoardSide(for: geometry))
+
+                                        cpuBottomControls
+                                    }
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(minHeight: max(0, geometry.size.height - gameVerticalPadding(for: geometry) * 2))
+                            }
                         }
                     }
-                }
-                .padding(.horizontal, gameHorizontalPadding(for: geometry))
-                .padding(.vertical, gameVerticalPadding(for: geometry))
-                .frame(width: geometry.size.width, height: geometry.size.height)
+                    .padding(.horizontal, gameHorizontalPadding(for: geometry))
+                    .padding(.vertical, gameVerticalPadding(for: geometry))
+                    .frame(width: geometry.size.width, height: geometry.size.height)
 
-                if viewModel.game.isFinished && !isResultScreenDismissed {
-                    GameResultScreen(
-                        game: viewModel.game,
-                        playMode: viewModel.playMode,
-                        difficulty: viewModel.difficulty,
-                        humanDisc: viewModel.humanDisc,
-                        playAgainAction: {
-                            isResultScreenDismissed = false
-                            hasRecordedCurrentGame = false
-                            viewModel.resetGame(playFeedback: true)
-                        },
-                        menuAction: showMenu,
-                        dismissAction: dismissResultScreen
-                    )
-                    .transition(.opacity.combined(with: .scale(scale: 0.96)))
-                    .zIndex(1)
+                    if viewModel.game.isFinished && !isResultScreenDismissed {
+                        GameResultScreen(
+                            game: viewModel.game,
+                            playMode: viewModel.playMode,
+                            difficulty: viewModel.difficulty,
+                            humanDisc: viewModel.humanDisc,
+                            playAgainAction: {
+                                isResultScreenDismissed = false
+                                hasRecordedCurrentGame = false
+                                viewModel.resetGame(playFeedback: true)
+                            },
+                            menuAction: showMenu,
+                            dismissAction: dismissResultScreen
+                        )
+                        .transition(.opacity.combined(with: .scale(scale: 0.96)))
+                        .zIndex(1)
+                    }
                 }
+                .animation(.spring(response: 0.32, dampingFraction: 0.86), value: viewModel.game.isFinished)
+                .animation(.spring(response: 0.32, dampingFraction: 0.86), value: isResultScreenDismissed)
+                .background(OthelloTheme.appBackground.ignoresSafeArea())
             }
-            .animation(.spring(response: 0.32, dampingFraction: 0.86), value: viewModel.game.isFinished)
-            .animation(.spring(response: 0.32, dampingFraction: 0.86), value: isResultScreenDismissed)
-            .background(OthelloTheme.appBackground.ignoresSafeArea())
+            .ignoresSafeArea(.container, edges: .horizontal)
         }
-        .ignoresSafeArea(.container, edges: .horizontal)
     }
 
     private var twoPlayerTopControls: some View {

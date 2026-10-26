@@ -120,16 +120,54 @@ final class OthelloAppUITests: XCTestCase {
         XCTAssertTrue(oniButton.label.contains("ロック中"))
         oniButton.tap()
 
-        let unlockAlert = app.alerts["鬼"]
-        XCTAssertTrue(unlockAlert.waitForExistence(timeout: 5))
-        XCTAssertTrue(unlockAlert.staticTexts["つよいをクリア後に開放"].exists)
+        let unlockDialog = app.otherElements["oniUnlockHintDialog"]
+        XCTAssertTrue(unlockDialog.waitForExistence(timeout: 5))
+        XCTAssertTrue(unlockDialog.staticTexts["つよいをクリア後に開放"].exists)
         XCTAssertFalse(app.buttons["selectCPUFirstButton"].exists)
         XCTAssertFalse(app.buttons["boardCell-0-0"].exists)
         keepScreenshot(named: "locked-oni-unlock-hint-ja")
 
-        unlockAlert.buttons["OK"].tap()
-        XCTAssertFalse(unlockAlert.exists)
+        app.buttons["dismissOniUnlockHintButton"].tap()
+        XCTAssertFalse(unlockDialog.exists)
         XCTAssertTrue(oniButton.isHittable)
+    }
+
+    func testResetDialogCancelAndConfirm() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+
+        let twoPlayerButton = app.buttons["startTwoPlayerButton"]
+        XCTAssertTrue(waitForMenuReady(twoPlayerButton, in: app))
+        twoPlayerButton.tap()
+
+        let openingMove = app.buttons["boardCell-2-3"]
+        XCTAssertTrue(openingMove.waitForExistence(timeout: 5))
+        openingMove.tap()
+        XCTAssertTrue(openingMove.label.contains("Black"))
+
+        let resetButtons = app.buttons.matching(NSPredicate(format: "label == %@", "Restart"))
+        XCTAssertEqual(resetButtons.count, 2)
+        resetButtons.element(boundBy: 1).tap()
+
+        let dialog = app.otherElements["resetConfirmationDialog"]
+        XCTAssertTrue(dialog.waitForExistence(timeout: 5))
+        let cancel = app.buttons["cancelResetButton"]
+        let confirm = app.buttons["confirmResetButton"]
+        XCTAssertTrue(cancel.isHittable)
+        XCTAssertTrue(confirm.isHittable)
+        XCTAssertGreaterThanOrEqual(cancel.frame.height, 44)
+        XCTAssertGreaterThanOrEqual(confirm.frame.height, 44)
+
+        cancel.tap()
+        XCTAssertFalse(dialog.exists)
+        XCTAssertTrue(openingMove.label.contains("Black"), "Cancel should preserve the game")
+
+        resetButtons.element(boundBy: 1).tap()
+        XCTAssertTrue(dialog.waitForExistence(timeout: 5))
+        confirm.tap()
+        XCTAssertFalse(dialog.exists)
+        XCTAssertTrue(openingMove.label.contains("available move"), "Confirm should reset the board")
     }
 
     func testCompactPortraitAndWideLandscapeKeepGameControlsVisible() throws {
