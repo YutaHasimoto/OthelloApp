@@ -47,6 +47,39 @@ final class OthelloAppUITests: XCTestCase {
         try assertGameBoardDoesNotScroll(startButtonIdentifier: "startTwoPlayerButton")
     }
 
+    func testTwoPlayerLandscapePanelsRemainUsable() throws {
+        let app = XCUIApplication()
+        app.launchArguments += ["-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        XCUIDevice.shared.orientation = .portrait
+        defer { XCUIDevice.shared.orientation = .portrait }
+        app.launch()
+
+        let startButton = app.buttons["startTwoPlayerButton"]
+        XCTAssertTrue(waitForMenuReady(startButton, in: app))
+        startButton.tap()
+        XCUIDevice.shared.orientation = .landscapeLeft
+        assertWindowOrientation(.landscape, in: app)
+
+        let menuButtons = app.buttons.matching(NSPredicate(format: "label == %@", "Menu"))
+        XCTAssertEqual(menuButtons.count, 2)
+        XCTAssertTrue(waitUntilHittable(menuButtons.element(boundBy: 0), timeout: 5))
+        XCTAssertTrue(waitUntilHittable(menuButtons.element(boundBy: 1), timeout: 5))
+        keepScreenshot(named: "two-player-opposed-landscape")
+
+        menuButtons.element(boundBy: 0).tap()
+        XCTAssertTrue(startButton.waitForExistence(timeout: 5))
+        XCTAssertTrue(waitUntilHittable(startButton, timeout: 5))
+        startButton.tap()
+
+        let restartButtons = app.buttons.matching(NSPredicate(format: "label == %@", "Restart"))
+        XCTAssertEqual(restartButtons.count, 2)
+        XCTAssertTrue(waitUntilHittable(restartButtons.element(boundBy: 1), timeout: 5))
+        restartButtons.element(boundBy: 1).tap()
+        XCTAssertTrue(app.otherElements["resetConfirmationDialog"].waitForExistence(timeout: 5))
+        app.buttons["cancelResetButton"].tap()
+        XCTAssertTrue(app.buttons["boardCell-0-0"].exists)
+    }
+
     func testCPUBoardDoesNotScroll() throws {
         try assertGameBoardDoesNotScroll(startButtonIdentifier: "startCPUButton-easy")
     }

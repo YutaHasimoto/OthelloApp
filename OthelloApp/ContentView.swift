@@ -1942,6 +1942,7 @@ struct ContentView: View {
             isThinking: !isTwoPlayerGame && viewModel.isThinking,
             width: width
         )
+        .rotationEffect(.degrees(isTwoPlayerGame ? 180 : 0))
     }
 
     private func trailingSideControls(width: CGFloat) -> some View {
